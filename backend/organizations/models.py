@@ -1,0 +1,30 @@
+from django.db import models
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+class Organization(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    description = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, related_name='created_organizations', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+class Membership(models.Model):
+    ROLE_CHOICES = [
+        ('admin', 'Admin'),
+        ('member', 'Member'),
+    ]
+
+    user = models.ForeignKey(User, related_name='memberships', on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, related_name='memberships', on_delete=models.CASCADE)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='member')
+    date_joined = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'organization')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.organization.name} ({self.role})"
