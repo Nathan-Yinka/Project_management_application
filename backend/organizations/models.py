@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth import get_user_model
 
@@ -13,10 +14,8 @@ class Organization(models.Model):
         return self.name
 
 class Membership(models.Model):
-    ROLE_CHOICES = [
-        ('admin', 'Admin'),
-        ('member', 'Member'),
-    ]
+    
+    ROLE_CHOICES = [(value, key) for key, value in settings.USER_ROLES.items()]
 
     user = models.ForeignKey(User, related_name='memberships', on_delete=models.CASCADE)
     organization = models.ForeignKey(Organization, related_name='memberships', on_delete=models.CASCADE)

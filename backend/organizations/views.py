@@ -42,30 +42,24 @@ class AddMemberView(generics.CreateAPIView):
 
         serializer.save()
 
-class RemoveMemberView(generics.GenericAPIView):
+
+class RemoveMemberView(generics.CreateAPIView):
     """
-    View to remove a member from an organization.
+    View to remove a member from an organization using a POST request.
     Only admins of the organization can remove members.
     """
     serializer_class = MembershipSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def delete(self, request, *args, **kwargs):
-        # Use the serializer to validate the input data
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        # Get the organization from the validated data
+    def perform_create(self, serializer):
         organization = serializer.validated_data['organization']
-        
-        # Get the organization from the validated data
         user = serializer.validated_data['user']
 
         membership = get_object_or_404(Membership, organization=organization, user=user)
 
         admin_role = settings.USER_ROLES['ADMIN']
-        if not Membership.objects.filter(user=request.user, organization=organization, role=admin_role).exists():
+        if not Membership.objects.filter(user=self.request.user, organization=organization, role=admin_role).exists():
             raise serializers.ValidationError("You are not authorized to remove members from this organization.")
-        
+
         membership.delete()
         return Response({"detail": "Member removed successfully."}, status=204)
