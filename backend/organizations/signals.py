@@ -16,12 +16,9 @@ User = get_user_model()
 @receiver(post_save, sender=Organization)
 def create_admin_membership(sender, instance, created, **kwargs):
     if created:
-        # Create a membership for the organization creator with the 'admin' role
-
         admin_group, _ = Group.objects.get_or_create(name=f"{instance.name}_Admin")
         member_group, _ = Group.objects.get_or_create(name=f"{instance.name}_Member")
 
-        # Assign 'add_project' model-level permission to the admin group
         content_type = ContentType.objects.get_for_model(Project)
         add_project_permission = Permission.objects.get(
             codename='add_project',

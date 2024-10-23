@@ -21,7 +21,6 @@ class OrganizationListCreateView(generics.ListCreateAPIView):
         return Organization.objects.filter(memberships__user=self.request.user)
 
     def perform_create(self, serializer):
-        # Save the new organization with the current user as the creator
         serializer.save(created_by=self.request.user)
     
 # class AddMemberView(generics.CreateAPIView):

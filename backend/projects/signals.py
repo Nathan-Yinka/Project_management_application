@@ -19,11 +19,14 @@ def assign_project_group_permissions(sender, instance, created, **kwargs):
         assign_perm('projects.view_project', admin_group, instance)
         assign_perm('projects.change_project', admin_group, instance)
         assign_perm('projects.delete_project', admin_group, instance)
+        assign_perm('projects.update_project_status', admin_group, instance)
+        assign_perm('can_comment', admin_group, instance)
 
         # Assign 'change_project' and 'update_project_status' permissions to the assigned user
         if instance.assigned_to:
             assign_perm('projects.view_project', instance.assigned_to, instance)
             assign_perm('projects.update_project_status', instance.assigned_to, instance)
+            assign_perm('can_comment', instance.assigned_to, instance)
 
 @receiver(pre_save, sender=Project)
 def update_project_assigned_permissions(sender, instance, **kwargs):

@@ -23,3 +23,18 @@ class Project(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Comment(models.Model):
+    project = models.ForeignKey('Project', related_name='comments', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='comments', on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        permissions = [
+            ("can_comment", "Can add comments to the project"),
+        ]
+
+    def __str__(self):
+        return f"Comment by {self.user} on {self.project}"
