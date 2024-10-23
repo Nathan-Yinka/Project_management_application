@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'drf_yasg',
     'corsheaders',
+    'guardian',
 
     # installed apps
     "users.apps.UsersConfig",
@@ -144,6 +145,7 @@ REST_FRAMEWORK = {
 AUTHENTICATION_BACKENDS = [
     'users.backends.EmailOrUsernameBackend', 
     'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend',
 ]
 
 
@@ -173,6 +175,23 @@ USER_ROLES = {
     'MEMBER': 'member',
 }
 
+# Define project status choices as a dictionary
+PROJECT_STATUS_CHOICES = {
+    'in_progress': 'In Progress',
+    'done': 'Done',
+    'abandoned': 'Abandoned',
+    'canceled': 'Canceled',
+}
+
+# Define project priority choices as a dictionary
+PROJECT_PRIORITY_CHOICES = {
+    'low': 'Low',
+    'mid': 'Mid',
+    'high': 'High',
+}
+
 # Email settings for notifications
 DEFAULT_FROM_EMAIL = 'your-email@example.com'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+ANONYMOUS_USER_ID = -1
