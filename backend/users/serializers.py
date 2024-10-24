@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth import get_user_model
+from organizations.serializers import OrganizationSerializer
 
 User = get_user_model()
 
@@ -27,7 +28,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password','first_name', 'last_name')
+        fields = ('id','username', 'email', 'password','first_name', 'last_name')
 
     def validate(self, attrs):
         attrs['email'] = attrs['email'].strip().lower()

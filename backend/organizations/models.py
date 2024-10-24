@@ -13,12 +13,19 @@ class Organization(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        permissions = [
+            ("add_project", "Can add project"),
+            ("add_user", "Can add user"),
+            ("remove_user", "Can remove user"),
+        ]
+
 class Membership(models.Model):
     
     ROLE_CHOICES = [(value, key) for key, value in settings.USER_ROLES.items()]
 
     user = models.ForeignKey(User, related_name='memberships', on_delete=models.CASCADE)
-    organization = models.ForeignKey(Organization, related_name='memberships', on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, related_name='user_memberships', on_delete=models.CASCADE)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='member')
     date_joined = models.DateTimeField(auto_now_add=True)
 

@@ -45,11 +45,13 @@ def update_project_assigned_permissions(sender, instance, **kwargs):
             if previous_assigned_user:
                 remove_perm('projects.view_project', previous_assigned_user, instance)
                 remove_perm('projects.update_project_status', previous_assigned_user, instance)
+                remove_perm('can_comment', previous_assigned_user, instance)
 
             # Assign permissions to the new assigned user
             if instance.assigned_to:
                 assign_perm('projects.view_project', instance.assigned_to, instance)
                 assign_perm('projects.update_project_status', instance.assigned_to, instance)
+                assign_perm('can_comment', instance.assigned_to, instance)
 
 @receiver(post_delete, sender=Project)
 def remove_project_permissions(sender, instance, **kwargs):
@@ -63,8 +65,11 @@ def remove_project_permissions(sender, instance, **kwargs):
     remove_perm('projects.view_project', admin_group, instance)
     remove_perm('projects.change_project', admin_group, instance)
     remove_perm('projects.delete_project', admin_group, instance)
+    remove_perm('projects.update_project_status', admin_group, instance)
+    remove_perm('can_comment', admin_group, instance)
 
     # Remove permissions from the assigned user
     if instance.assigned_to:
         remove_perm('projects.view_project', instance.assigned_to, instance)
         remove_perm('projects.update_project_status', instance.assigned_to, instance)
+        remove_perm('can_comment', instance.assigned_to, instance)

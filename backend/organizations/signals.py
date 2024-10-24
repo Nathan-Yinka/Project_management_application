@@ -19,12 +19,11 @@ def create_admin_membership(sender, instance, created, **kwargs):
         admin_group, _ = Group.objects.get_or_create(name=f"{instance.name}_Admin")
         member_group, _ = Group.objects.get_or_create(name=f"{instance.name}_Member")
 
-        content_type = ContentType.objects.get_for_model(Project)
-        add_project_permission = Permission.objects.get(
-            codename='add_project',
-            content_type=content_type
-        )
-        admin_group.permissions.add(add_project_permission)
+        assign_perm('add_project', admin_group, instance)
+        assign_perm('add_user', admin_group, instance)
+        assign_perm('remove_user', admin_group, instance)
+        assign_perm('view_organization', member_group, instance)
+        
         Membership.objects.create(
             user=instance.created_by,
             organization=instance,
@@ -53,7 +52,7 @@ def handle_membership_creation(sender, instance, created, **kwargs):
             instance.user.groups.add(member_group)
         elif instance.role == settings.USER_ROLES['MEMBER']:
             instance.user.groups.add(member_group)
-
+        
             # Send an email notification if the user is added as a member
             send_mail(
                 'You have been added to an organization',
@@ -62,6 +61,7 @@ def handle_membership_creation(sender, instance, created, **kwargs):
                 [instance.user.email],
                 fail_silently=False,
             )
+        # assign_perm('organizations.remove_user', instance.user ,instance.user)
 
 @receiver(pre_save, sender=Membership)
 def handle_membership_update(sender, instance, **kwargs):
@@ -108,7 +108,7 @@ def process_pending_membership(sender, instance, created, **kwargs):
     if created:
         # Check if the email is associated with an existing user
         try:
-            user = User.objects.get(email=instance.email)
+            user = User.objects.get(email__iexact=instance.email)
             # Create a Membership for the user
             Membership.objects.create(
                 user=user,
@@ -118,9 +118,15 @@ def process_pending_membership(sender, instance, created, **kwargs):
             # Optionally, you can delete the pending membership after successful conversion
             instance.delete()
         except User.DoesNotExist:
-            # If no user is found, you can leave the PendingMembership as it is
-            pass
-
+            # Send an email notification if the user is added as a member
+            send_mail(
+                'You have been invited to be added to an organization',
+                f'Hello dear,\n\nYou have been invited to be added as a {instance.role} to the organization: {instance.organization.name}. Register on the platform to join the organization',
+                settings.DEFAULT_FROM_EMAIL,
+                [instance.email],
+                fail_silently=False,
+            )
+            
 
 @receiver(post_save, sender=User)
 def assign_pending_memberships_to_user(sender, instance, created, **kwargs):
