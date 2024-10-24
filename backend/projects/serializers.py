@@ -9,6 +9,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = '__all__'
         extra_fields = ['user_permissions']
+        read_only_fields = ['created_by']
 
     def get_user_permissions(self, obj):
         """
@@ -16,13 +17,22 @@ class ProjectSerializer(serializers.ModelSerializer):
         """
         request = self.context.get('request')
         if request and request.user.is_authenticated:
-            return list(get_user_permissions_for_instance(request.user, obj))
+            return get_user_permissions_for_instance(request.user, obj)
         return []
 
 class ProjectStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
-        fields = ["id","status",'organization']
+        fields = ["id", "status", "organization"]
+
+    def validate(self, data):
+        """
+        Custom validation to ensure that the organization exists and belongs to the project.
+        """
+        project = self.instance
+        if data['organization'] != project.organization:
+            raise serializers.ValidationError({"organization": "The organization does not match the project's organization."})
+        return data
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:

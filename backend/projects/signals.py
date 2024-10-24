@@ -16,16 +16,16 @@ def assign_project_group_permissions(sender, instance, created, **kwargs):
 
     if created:
         # Assign permissions to admin group for the project instance
-        assign_perm('projects.view_project', admin_group, instance)
-        assign_perm('projects.change_project', admin_group, instance)
-        assign_perm('projects.delete_project', admin_group, instance)
-        assign_perm('projects.update_project_status', admin_group, instance)
+        assign_perm('view_project', admin_group, instance)
+        assign_perm('change_project', admin_group, instance)
+        assign_perm('delete_project', admin_group, instance)
+        assign_perm('update_project_status', admin_group, instance)
         assign_perm('can_comment', admin_group, instance)
 
         # Assign 'change_project' and 'update_project_status' permissions to the assigned user
         if instance.assigned_to:
-            assign_perm('projects.view_project', instance.assigned_to, instance)
-            assign_perm('projects.update_project_status', instance.assigned_to, instance)
+            assign_perm('view_project', instance.assigned_to, instance)
+            assign_perm('update_project_status', instance.assigned_to, instance)
             assign_perm('can_comment', instance.assigned_to, instance)
 
 @receiver(pre_save, sender=Project)
@@ -43,14 +43,14 @@ def update_project_assigned_permissions(sender, instance, **kwargs):
         if previous_assigned_user != instance.assigned_to:
             # Remove permissions from the previous assigned user
             if previous_assigned_user:
-                remove_perm('projects.view_project', previous_assigned_user, instance)
-                remove_perm('projects.update_project_status', previous_assigned_user, instance)
+                remove_perm('view_project', previous_assigned_user, instance)
+                remove_perm('update_project_status', previous_assigned_user, instance)
                 remove_perm('can_comment', previous_assigned_user, instance)
 
             # Assign permissions to the new assigned user
             if instance.assigned_to:
-                assign_perm('projects.view_project', instance.assigned_to, instance)
-                assign_perm('projects.update_project_status', instance.assigned_to, instance)
+                assign_perm('view_project', instance.assigned_to, instance)
+                assign_perm('update_project_status', instance.assigned_to, instance)
                 assign_perm('can_comment', instance.assigned_to, instance)
 
 @receiver(post_delete, sender=Project)
@@ -62,14 +62,14 @@ def remove_project_permissions(sender, instance, **kwargs):
     admin_group = Group.objects.get(name=f"{instance.organization.name}_Admin")
 
     # Remove permissions for the admin and member groups for the project instance
-    remove_perm('projects.view_project', admin_group, instance)
-    remove_perm('projects.change_project', admin_group, instance)
-    remove_perm('projects.delete_project', admin_group, instance)
-    remove_perm('projects.update_project_status', admin_group, instance)
+    remove_perm('view_project', admin_group, instance)
+    remove_perm('change_project', admin_group, instance)
+    remove_perm('delete_project', admin_group, instance)
+    remove_perm('update_project_status', admin_group, instance)
     remove_perm('can_comment', admin_group, instance)
 
     # Remove permissions from the assigned user
     if instance.assigned_to:
-        remove_perm('projects.view_project', instance.assigned_to, instance)
-        remove_perm('projects.update_project_status', instance.assigned_to, instance)
+        remove_perm('view_project', instance.assigned_to, instance)
+        remove_perm('update_project_status', instance.assigned_to, instance)
         remove_perm('can_comment', instance.assigned_to, instance)

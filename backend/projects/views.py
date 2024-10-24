@@ -17,7 +17,7 @@ class ProjectListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         organization_id = self.request.query_params.get('organization_id')
-        return get_objects_for_user(user, 'projects.view_project',klass=Project).filter(organization_id=organization_id)
+        return get_objects_for_user(user, 'view_project',klass=Project)
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
@@ -42,11 +42,11 @@ class UpdateProjectStatus(generics.UpdateAPIView):
         """
         Override to get the project instance based on the request data.
         """
-        project_id = self.request.data.get('project_id')
-        organization = self.request.data.get("organization")
-        if not project_id:
-            raise serializers.ValidationError({"project_id": "This field is required."})
-        return get_object_or_404(Project, id=project_id,organization=organization)
+        project_id = self.kwargs.get('project_id')
+        organization_id = self.request.data.get("organization")
+        if not organization_id:
+            raise serializers.ValidationError({"organization": "This field is required."})
+        return get_object_or_404(Project, id=project_id, organization_id=organization_id)
     
 
 class AddCommentView(generics.CreateAPIView):

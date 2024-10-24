@@ -98,7 +98,8 @@ class CanAddProjectPermission(BasePermission):
         return self.check_permission(request, 'organizations.add_project')
 
     def check_permission(self, request, permission_codename, view=None):
-        organization = self.get_organization(request.data.get('organization') or view.kwargs.get('organization_id')) 
+        organization = self.get_organization(request.data.get('organization') or (view.kwargs.get('organization_id') if view is not None else "") ) 
+        
         if not self.is_user_member_of_organization(request.user, organization):
             logger.warning(f"User {request.user} is not a member of organization {organization.name}.")
             raise PermissionDenied("You must be a member of the organization.")
@@ -169,11 +170,30 @@ class CanUpdateProjectStatusPermission(BasePermission):
     """
     Custom permission to check if the user has the 'update_project_status' permission.
     """
+    
+    def has_permission(self, request, view):
 
-    def has_object_permission(self, request, view, obj):
-        # Check if the user has the 'update_project_status' permission for the project
-        return 'update_project_status' in get_perms(request.user, obj)
+        # Get the project_id from the request data
+        project_id = view.kwargs.get("project_id")
+        if not project_id:
+            logger.warning(f"Project ID not provided in the request by user {request.user}.")
+            raise PermissionDenied("Project ID is required to add a comment.")
 
+        # Fetch the project instance
+        try:
+            project = get_object_or_404(Project, id=project_id)
+        except Project.DoesNotExist:
+            logger.error(f"Project with ID {project_id} does not exist. Request by user {request.user}.")
+            raise PermissionDenied("The specified project does not exist.")
+        user_permissions = get_perms(request.user, project)
+        print(user_permissions)
+        has_permission = 'update_project_status' in user_permissions
+
+        if not has_permission:
+            logger.warning(f"User {request.user} does not have 'update_project_status' permission for project {project}.")
+        
+            return has_permission
+        return False
 
 
 

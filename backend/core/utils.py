@@ -67,6 +67,7 @@ def get_user_permissions_for_instance(user, objs):
     # Get object-level permissions for each provided instance
     for obj in objs:
         object_permissions = get_perms(user, obj)
+        print(object_permissions)
         # Format object-level permissions as 'app_label.permission_codename'
         app_label = obj._meta.app_label
         formatted_permissions = {f"{app_label}.{perm}" for perm in object_permissions}

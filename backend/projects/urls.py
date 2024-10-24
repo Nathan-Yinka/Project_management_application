@@ -14,7 +14,7 @@ urlpatterns = [
     path('<int:pk>/', ProjectDetailView.as_view(), name='project-detail'),
 
     # URL for updating the status of a project
-    path('update-status/', UpdateProjectStatus.as_view(), name='project-update-status'),
+    path('<int:project_id>/update-status/', UpdateProjectStatus.as_view(), name='update_project_status'),
 
     # URL for adding a comment to a specific project
     path('<int:project_id>/add-comment/', AddCommentView.as_view(), name='project-add-comment'),

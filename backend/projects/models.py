@@ -19,6 +19,7 @@ class Project(models.Model):
     class Meta:
         permissions = [
             ("update_project_status", "Can update the status of the project"),
+            ("can_comment", "Can add comments to the project"),
         ]
 
     def __str__(self):
@@ -30,11 +31,6 @@ class Comment(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        permissions = [
-            ("can_comment", "Can add comments to the project"),
-        ]
 
     def __str__(self):
         return f"Comment by {self.user} on {self.project}"
