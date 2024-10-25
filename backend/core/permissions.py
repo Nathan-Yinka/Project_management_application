@@ -186,14 +186,13 @@ class CanUpdateProjectStatusPermission(BasePermission):
             logger.error(f"Project with ID {project_id} does not exist. Request by user {request.user}.")
             raise PermissionDenied("The specified project does not exist.")
         user_permissions = get_perms(request.user, project)
-        print(user_permissions)
         has_permission = 'update_project_status' in user_permissions
 
         if not has_permission:
             logger.warning(f"User {request.user} does not have 'update_project_status' permission for project {project}.")
-        
-            return has_permission
-        return False
+    
+            return False
+        return True
 
 
 

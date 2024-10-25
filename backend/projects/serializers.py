@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from core.utils import get_user_permissions_for_instance 
+from organizations.models import Membership
 from .models import Project,Comment
+
 
 class ProjectSerializer(serializers.ModelSerializer):
     user_permissions = serializers.SerializerMethodField(read_only=True)
@@ -19,6 +21,25 @@ class ProjectSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             return get_user_permissions_for_instance(request.user, obj)
         return []
+    
+    def validate(self, data):
+        """
+        Custom validation to ensure that the assigned user is part of the organization.
+        """
+        organization = data.get('organization')
+        assigned_user = data.get('assigned_to')
+
+        # Check if the organization is provided
+        if not organization:
+            raise serializers.ValidationError({"organization": "This field is required."})
+
+        # If assigned_user is provided, ensure they are part of the organization
+        if assigned_user:
+            is_member = Membership.objects.filter(user=assigned_user, organization=organization).exists()
+            if not is_member:
+                raise serializers.ValidationError({"assigned_to": "The user must be a member of the organization to be assigned to this project."})
+
+        return data
 
 class ProjectStatusSerializer(serializers.ModelSerializer):
     class Meta:
