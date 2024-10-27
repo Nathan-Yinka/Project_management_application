@@ -1,0 +1,73 @@
+name: Build, Push & Deploy to AKS
+
+on:
+    push:
+        branches: [main]
+
+jobs:
+    build:
+        name: BUILD & PUSH
+        runs-on: ubuntu-latest
+        env:
+            LOH_REGISTRY: ${{ secrets.LOH_REGISTRY }}
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            # Steps represent a sequence of tasks that will be executed as part of the job
+            - name: Azure ACR login
+              uses: azure/docker-login@v1
+              with:
+                  login-server: ${{ env.LOH_REGISTRY }}
+                  username: ${{ secrets.LOH_REGISTRY_USERNAME }}
+                  password: ${{ secrets.LOH_REGISTRY_PASSWORD }}
+
+            - name: Build and push
+              env:
+                  ACR_REGISTRY: ${{ env.LOH_REGISTRY }}
+                  ACR_REPOSITORY: "oxypu-admin"
+                  IMAGE_TAG: ${{ github.SHA }}
+              run: |
+                  docker build -t $ACR_REGISTRY/$ACR_REPOSITORY:$IMAGE_TAG .
+                  docker push $ACR_REGISTRY/$ACR_REPOSITORY:$IMAGE_TAG
+    deploy:
+        name: AKS DEPLOY
+        runs-on: ubuntu-latest
+        needs: build
+
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v3
+
+          - name: Find and replace image tag
+            run: sed -i "s/version/${{github.SHA}}/g" ./values/values.development.yaml
+
+          - name: Set up Helm
+            run: |
+              curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+              chmod 700 get_helm.sh
+              ./get_helm.sh
+          - uses: actions/setup-python@v2
+            with:
+                python-version: 3.7
+
+          - uses: Azure/login@v1
+            with:
+                creds: '{"clientId":"${{ secrets.LOH_APP_ID }}","clientSecret":"${{ secrets.LOH_SP_PASSWORD }}","subscriptionId":"${{ secrets.LOH_SUBSCRIPTION }}","tenantId":"${{ secrets.LOH_TENANT }}"}'
+        
+          - name: Kubeconfig
+            run: |
+                az aks get-credentials --resource-group loh-sa-north --name loh-aks
+
+          - name: Deploy
+            env:
+                release: oxypu-admin
+                namespace: oxypu-production
+                chart: loh/cloudclinic
+                repo: ${{secrets.HELM_REPO}}
+                values: "./values/values.production.yaml"
+            run: |
+                helm repo add loh $repo
+                helm repo update
+                helm upgrade --install $release $chart -f $values --atomic --namespace=$namespace

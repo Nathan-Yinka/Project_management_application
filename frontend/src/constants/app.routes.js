@@ -1,0 +1,25 @@
+export const homepage = "/";
+export const authentication = "/authentication";
+export const dashboard = "/dashboard";
+export const paymenthistory = "paymenthistory";
+export const paymentdetails = "paymentdetails";
+export const addrole = "addrole";
+export const assignrole = "assignrole";
+export const coupon = "coupon";
+export const createcoupon = "createcoupon";
+export const coupondetails = "coupondetails";
+export const createplan = "createplan";
+export const customerdetails = "customerdetails";
+export const customers = "customers";
+export const editprofile = "editprofile";
+export const editrole = "editrole";
+export const notifications = "notifications";
+export const plandetails = "plandetails";
+export const plans = "plans";
+export const profile = "profile";
+export const roledetails = "roledetails";
+export const rolespermissions = "rolespermissions";
+export const viewassignedrole = "viewassignedrole";
+
+export const login = "/login"
+export const signup = "/signup"
