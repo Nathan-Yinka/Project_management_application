@@ -6,9 +6,10 @@ import done_icon from "../../assets/done.svg";
 import abandoned_icon from "../../assets/abandoned.svg";
 import cancel_icon from "../../assets/cancelled.svg";
 import in_progress_icon from "../../assets/in_progress.svg";
+import { useTaskContext } from "@/context/TaskContext";
 
 const TaskListView = ({ onTaskClick }) => {
-  const [isLoading, setIsLoading] = useState(true);
+  const { allTasks,isLoadingAll } = useTaskContext()
   const statuses = ["Abandoned", "In Progress", "Canceled", "Done"];
 
   const statusIcons = {
@@ -25,7 +26,7 @@ const TaskListView = ({ onTaskClick }) => {
     return () => clearTimeout(timer);
   }, []);
 
-  const groupedTasks = taskData.reduce((acc, task) => {
+  const groupedTasks = allTasks.reduce((acc, task) => {
     if (!acc[task.status]) {
       acc[task.status] = [];
     }
@@ -54,7 +55,7 @@ const TaskListView = ({ onTaskClick }) => {
                 </tr>
               </thead>
               <tbody>
-                {isLoading ? (
+                {isLoadingAll ? (
                   <TaskListSkeleton />
                 ) : (
                   (groupedTasks[status] || []).map((task) => (

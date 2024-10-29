@@ -3,14 +3,21 @@ from rest_framework import serializers
 from guardian.shortcuts import get_perms
 from .models import Organization, Membership,PendingMembership
 from core.utils import get_user_all_permissions
+from django.db.models.signals import post_save
 
 User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'first_name', 'last_name')
+        fields = ('id', 'username', 'email', 'first_name', 'last_name','name')
+
+    def get_name(self, obj):
+        # Combine first_name and last_name to form the full name
+        return f"{obj.first_name} {obj.last_name}".strip()
 
 
 class MembershipSerializer(serializers.ModelSerializer):
@@ -54,6 +61,53 @@ class PendingMembershipSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("The user has been invited to join the organization and will be added after he registers")
 
         return data
+    
+class AddMembersSerializer(serializers.Serializer):
+    emails = serializers.ListField(
+        child=serializers.EmailField(),
+        allow_empty=False,
+        help_text="List of emails to invite as members"
+    )
+    organization = serializers.PrimaryKeyRelatedField(queryset=Organization.objects.all())
+
+    def validate(self, data):
+        """
+        Check if each user in the list is already a member or has a pending invitation.
+        """
+        emails = data.get('emails')
+        organization = data.get('organization')
+
+        # Validate each email
+        for email in emails:
+            if Membership.objects.filter(user__email__iexact=email, organization=organization).exists():
+                raise serializers.ValidationError(
+                    {"emails": f"The user with email {email} is already a member of this organization."}
+                )
+            if PendingMembership.objects.filter(email__iexact=email, organization=organization).exists():
+                raise serializers.ValidationError(
+                    {"emails": f"The user with email {email} has already been invited to join the organization."}
+                )
+
+        return data
+
+    def create(self, validated_data):
+        """
+        Create pending memberships for each email.
+        """
+        emails = validated_data.get('emails')
+        organization = validated_data.get('organization')
+        pending_memberships = []
+
+        for email in emails:
+            pending_memberships.append(PendingMembership(email=email, organization=organization))
+
+        # Bulk create pending memberships
+        created_memberships = PendingMembership.objects.bulk_create(pending_memberships)
+
+        for membership in created_memberships:
+            post_save.send(sender=PendingMembership, instance=membership, created=True)
+
+        return created_memberships
 
 class RemoveMembershipSerializer(serializers.Serializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())

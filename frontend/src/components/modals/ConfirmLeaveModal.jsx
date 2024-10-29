@@ -1,9 +1,21 @@
 import React from "react";
 import { Button, Dialog, DialogBody, DialogFooter } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
+import { useOrganizationContext } from "@/context/OrganizationContext";
+import { Spinner } from "@material-tailwind/react";
 
 export function ConfirmLeaveModal({ open, setOpen, onConfirm }) {
+  const { leaveOrganization,isLoadingLeave,organizationDetails } = useOrganizationContext()
   const handleOpen = () => setOpen(!open);
+
+  const onSuccess = ()=>{
+    onConfirm();
+    handleOpen();
+  }
+
+  const handleConfirm = ()=>{
+    leaveOrganization(organizationDetails?.id,onSuccess);
+  }
 
   return (
     <Dialog open={open} handler={handleOpen} className="rounded-xl max-w-sm w-full">
@@ -25,13 +37,11 @@ export function ConfirmLeaveModal({ open, setOpen, onConfirm }) {
         <Button
           variant="gradient"
           color="red"
-          className="w-auto px-6 py-2 font-semibold"
-          onClick={() => {
-            onConfirm();
-            handleOpen();
-          }}
+          disabled={isLoadingLeave}
+          className="w-auto px-6 py-2 font-semibold flex items-center justify-center"
+          onClick={handleConfirm}
         >
-          Yes
+          {isLoadingLeave ? <Spinner color="white" className="font-bold" /> : "Yes"}
         </Button>
         <Button
           variant="outlined"

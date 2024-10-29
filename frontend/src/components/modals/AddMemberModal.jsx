@@ -8,25 +8,22 @@ import {
   Typography,
   Card,
 } from "@material-tailwind/react";
+import { Spinner } from "@material-tailwind/react";
 import { AiOutlineDown, AiOutlineClose } from "react-icons/ai";
+import { useUserContext } from "@/context/UserContext";
+import { useOrganizationContext } from "@/context/OrganizationContext";
 
 export function AddMemberModal({ open,setOpen }) {
+
+  const { usersNotInOrganization } = useUserContext();
+  const { addMembersToOrganization,organizationDetails,isLoadingAddMember} = useOrganizationContext();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const dropdownRef = useRef(null);
 
-  const members = [
-    { name: "Adeyinka Boye", email: "ab@example.com" },
-    { name: "John Doe", email: "john.doe@example.com" },
-    { name: "Jane Smith", email: "jane.smith@example.com" },
-    { name: "Lisa Brown", email: "lisa.brown@example.com" },
-    { name: "Michael Johnson", email: "michael.johnson@example.com" },
-    { name: "Chris Lee", email: "chris.lee@example.com" },
-    { name: "Patricia Green", email: "patricia.green@example.com" },
-    { name: "David Wilson", email: "david.wilson@example.com" },
-  ];
+  let members = usersNotInOrganization
 
   const handleOpen = () => setOpen(!open);
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
@@ -39,6 +36,17 @@ export function AddMemberModal({ open,setOpen }) {
       setSelectedMembers([...selectedMembers, member]);
     }
   };
+
+  const onSuccess = ()=>{
+    setSelectedMembers([]);
+    handleOpen();
+  }
+
+  const handleSubmit = () => {
+    const selectedEmails = selectedMembers.map((member) => member.email);
+    addMembersToOrganization(organizationDetails.id,selectedEmails,onSuccess)
+  };
+  
 
   // Remove a member from the selected list
   const handleRemoveMember = (memberToRemove) => {
@@ -171,12 +179,19 @@ export function AddMemberModal({ open,setOpen }) {
         </DialogBody>
 
         <DialogFooter>
-          <Button variant="gradient" color="black" size="lg" className="w-full" onClick={() => {
-            const selectedEmails = selectedMembers.map(member => member.email);
-            console.log("Selected Emails:", selectedEmails);
-            handleOpen();
-          }}>
-            Submit
+          <Button
+            variant="gradient"
+            color="black"
+            size="lg"
+            className="w-full flex items-center justify-center"
+            onClick={handleSubmit}
+            disabled={isLoadingAddMember} // Disable button while loading
+          >
+            {!isLoadingAddMember ? (
+              "Submit"
+            ) : (
+              <Spinner color="white" className="font-bold" />
+            )}
           </Button>
         </DialogFooter>
       </Dialog>

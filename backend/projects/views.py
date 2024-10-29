@@ -17,7 +17,7 @@ class ProjectListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         organization_id = self.request.query_params.get('organization_id')
-        return get_objects_for_user(user, 'view_project',klass=Project)
+        return get_objects_for_user(user, 'view_project',klass=Project).filter(organization_id=organization_id)
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)

@@ -1,15 +1,9 @@
+import { useUserContext } from "@/context/UserContext";
 import React from "react";
-
-// Sample data for avatar images and names
-const avatarData = [
-  { name: "Oludare Nathan", image: null },
-  { name: "Jane Doe", image: null },
-  { name: "John Smith", image: null },
-  { name: "Alice Johnson", image: null },
-];
 
 // Helper function to get initials from a name
 const getInitials = (name) => {
+  if (!name) return ""; // Prevent error if name is undefined
   const names = name.split(" ");
   const initials = names.map((n) => n[0]).join("");
   return initials.toUpperCase();
@@ -28,43 +22,61 @@ const colors = [
 
 // Function to consistently map a name to a color
 const getColorByName = (name) => {
+  if (!name) return colors[0];
   const hash = Array.from(name).reduce((acc, char) => acc + char.charCodeAt(0), 0);
   return colors[hash % colors.length];
 };
 
-const AvatarStack = ({ avatars = avatarData, maxDisplay = 3 }) => {
-  return (
-    <div className="flex items-center">
-      {avatars.slice(0, maxDisplay).map((avatar, index) => {
-        // Use consistent color for each name
-        const colorClass = getColorByName(avatar.name);
+const AvatarStack = ({ maxDisplay = 3 }) => {
+  const { usersInOrganization, isLoadingInOrg } = useUserContext();
 
-        return (
-          <div
-            key={index}
-            className="group relative"
-            style={{ zIndex: avatars.length - index }}
-          >
+  const renderPlaceholderStack = () =>
+    [...Array(maxDisplay)].map((_, index) => (
+      <div
+        key={index}
+        className="p-2 w-10 h-10 rounded-full bg-gray-300 animate-pulse -ml-3 border-2 border-white flex items-center justify-center text-xs font-medium text-white"
+      >
+        
+      </div>
+    ));
+
+  return (
+    <div className="flex items-center ml-3">
+      {isLoadingInOrg || usersInOrganization?.length === 0 ? (
+        // Show loading or empty placeholders
+        renderPlaceholderStack()
+      ) : (
+        // Render actual avatar stack when users are available
+        usersInOrganization.slice(0, maxDisplay).map((avatar, index) => {
+          const colorClass = getColorByName(avatar.first_name);
+
+          return (
             <div
-              className={`p-2 md:w-10 md:h-10 rounded-full ${colorClass} flex items-center justify-center text-white font-semibold text-sm -ml-3 border-2 border-white
-                          transition-transform duration-300 transform group-hover:z-[1000000]`} // High z-index on hover
+              key={index}
+              className="group relative"
+              style={{ zIndex: usersInOrganization.length - index }}
             >
-              {avatar.image ? (
-                <img
-                  src={avatar.image}
-                  alt={avatar.name}
-                  className="w-full h-full object-cover rounded-full"
-                />
-              ) : (
-                getInitials(avatar.name) // Display the initials
-              )}
+              <div
+                className={`p-2 w-10 h-10 rounded-full ${colorClass} flex items-center justify-center text-white font-semibold text-sm -ml-3 border-2 border-white
+                            transition-transform duration-300 transform group-hover:z-[1000000]`}
+              >
+                {avatar.image ? (
+                  <img
+                    src={avatar.image}
+                    alt={avatar.first_name}
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                ) : (
+                  getInitials(avatar.first_name)
+                )}
+              </div>
             </div>
-          </div>
-        );
-      })}
-      {avatars.length > maxDisplay && (
-        <div className="p-2 md:w-10 md:h-10 rounded-full bg-gray-400 flex items-center justify-center text-white font-semibold text-sm -ml-3 border-2 border-white">
-          +{avatars.length - maxDisplay}
+          );
+        })
+      )}
+      {!isLoadingInOrg && usersInOrganization?.length > maxDisplay && (
+        <div className="p-2 -ml-3  w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center text-white font-semibold text-sm  border-2 border-white">
+          +{usersInOrganization?.length - maxDisplay}
         </div>
       )}
     </div>

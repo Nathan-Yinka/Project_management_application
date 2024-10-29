@@ -46,6 +46,10 @@ def handle_membership_creation(sender, instance, created, **kwargs):
     member_group, _ = Group.objects.get_or_create(name=f"{instance.organization.name}_Member")
 
     if created:
+        print("in thhe post save member",instance.role)
+        print(settings.USER_ROLES['MEMBER'])
+        print(settings.USER_ROLES['MEMBER']==instance.role)
+        print(type(settings.USER_ROLES['MEMBER']), type(instance.role))
         # New membership created: Add the user to the appropriate group
         if instance.role == settings.USER_ROLES['ADMIN']:
             instance.user.groups.add(admin_group)
@@ -54,6 +58,7 @@ def handle_membership_creation(sender, instance, created, **kwargs):
             instance.user.groups.add(member_group)
         
             # Send an email notification if the user is added as a member
+            print("send mail side")
             send_mail(
                 'You have been added to an organization',
                 f'Hello {instance.user.username},\n\nYou have been added as a {instance.role} to the organization: {instance.organization.name}.',
@@ -106,6 +111,7 @@ def handle_membership_deletion(sender, instance, **kwargs):
 @receiver(post_save, sender=PendingMembership)
 def process_pending_membership(sender, instance, created, **kwargs):
     if created:
+        print("----------------------------------------------------------------")
         # Check if the email is associated with an existing user
         try:
             user = User.objects.get(email__iexact=instance.email)

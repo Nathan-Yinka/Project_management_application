@@ -1,31 +1,55 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import logo from "../../assets/darkoxypu.png";
 import loginImage from "../../assets/auth_image.jpeg";
 import { dashboard, signup } from "../../constants/app.routes";
-// import SuccessPopup from "../dashboard/component/SuccessPopup";
+import { toast } from "sonner"
+import { Spinner } from "@material-tailwind/react";
+import { useUserContext } from "@/context/UserContext";
 
 const Login = () => {
+  const { loginUser, isLoadingLogin } = useUserContext();
   const [showPassword, setShowPassword] = useState(false);
-  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    setShowSuccessPopup(true);
-    setTimeout(() => {
-      setShowSuccessPopup(false);
-      navigate(dashboard);
-    }, 3000); // Show the popup for 3 seconds before navigating
+  const validateInputs = () => {
+    const errors = [];
+  
+    if (!email) {
+      errors.push("Email or Username is required");
+    } 
+  
+    if (!password) {
+      errors.push("Password is required");
+    } 
+  
+    // Show all errors using toast notifications
+    errors.forEach((error) => toast.error(error));
+  
+    // Return true if no errors, otherwise false
+    return errors.length === 0;
   };
+  
+  const handleLogin = async () => {
+    if (validateInputs()) {
+      const success = await loginUser({ username:email, password });
+    }
+  };
+  
 
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-auto">
-    <div className="w-full md:w-1/2 flex flex-col justify-center items-center md:items-start md:p-16 relative">
-      <div className="w-full md:w-3/4 px-4 md:px-0 md:ml-16">
-        <h1 className="text-2xl md:text-3xl font-semibold text-center mb-1 md:mb-2 mt-5 md:mt-0">Login</h1>
-        <p className="text-sm mb-4 md:mb-8 text-center font-thin">Get access into your account</p>
-        <form className="w-full">
-          <div className="mb-4 md:mb-8">
+      <div className="w-full md:w-1/2 flex flex-col justify-center items-center md:items-start md:p-16 relative">
+        <div className="w-full md:w-3/4 px-4 md:px-0 md:ml-16">
+          <h1 className="text-2xl md:text-3xl font-semibold text-center mb-1 md:mb-2 mt-5 md:mt-0">
+            Login
+          </h1>
+          <p className="text-sm mb-4 md:mb-8 text-center font-thin">
+            Get access into your account
+          </p>
+          <form className="w-full">
+            <div className="mb-4 md:mb-8">
               <label
                 className="block text-gray-700 text-sm font-normal mb-2"
                 htmlFor="email"
@@ -34,9 +58,11 @@ const Login = () => {
               </label>
               <input
                 id="email"
-                type="email"
+                type="text"
                 placeholder="Enter Email or Username"
-                className="border  rounded-lg w-full py-3 md:py-4 px-3 text-gray-700 leading-tight"
+                className="border rounded-lg w-full py-3 md:py-4 px-3 text-gray-700 leading-tight"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="mb-4 md:mb-8">
@@ -52,6 +78,8 @@ const Login = () => {
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter Password"
                   className="border rounded-lg w-full py-3 md:py-4 px-3 text-gray-700 leading-tight"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                 <span
                   className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
@@ -104,17 +132,20 @@ const Login = () => {
                 type="button"
                 onClick={handleLogin}
                 className="bg-black text-white font-bold py-2 px-4 rounded-lg btn-primary w-full"
+                disabled={isLoadingLogin}
               >
-                Login
+                {isLoadingLogin ? <Spinner color="white" className="font-bold" /> : "Login"}
               </button>
             </div>
             <p className="text-sm mb-4 md:mb-8 text-center font-thin">
-            Don’t have an Account? 
-            <span onClick={() => navigate(signup)} className="font-semibold cursor-pointer ml-1">
+              Don’t have an Account?
+              <span
+                onClick={() => navigate(signup)}
+                className="font-semibold cursor-pointer ml-1"
+              >
                 Sign Up
-            </span>
+              </span>
             </p>
-
           </form>
         </div>
       </div>

@@ -22,8 +22,7 @@ export function EditTaskModal({ open, setOpen, taskData }) {
     assignee: "",
   });
   
-
-    useEffect(() => {
+  useEffect(() => {
     if (taskData) {
       setFormData({
         taskName: taskData.title || "",
@@ -34,7 +33,6 @@ export function EditTaskModal({ open, setOpen, taskData }) {
       });
     }
   }, [taskData]); // Only update formData when taskData changes
-
 
   const dropdownRefs = {
     priority: useRef(null),
@@ -49,8 +47,16 @@ export function EditTaskModal({ open, setOpen, taskData }) {
   };
 
   const options = {
-    priority: ["High", "Medium", "Low"],
-    status: ["Not Started", "In Progress", "Completed"],
+    priority: [
+      { key: 'low', label: 'Low' },
+      { key: 'mid', label: 'Medium' },
+      { key: 'high', label: 'High' },
+    ],
+    status: [
+      { key: 'not_started', label: 'Not Started' },
+      { key: 'in_progress', label: 'In Progress' },
+      { key: 'completed', label: 'Completed' },
+    ],
   };
 
   const assignees = [
@@ -59,8 +65,8 @@ export function EditTaskModal({ open, setOpen, taskData }) {
     { name: "Jane Smith", email: "jane.smith@example.com" },
   ];
 
-  const handleOptionSelect = (type, value) => {
-    setFormData((prev) => ({ ...prev, [type]: value }));
+  const handleOptionSelect = (type, key) => {
+    setFormData((prev) => ({ ...prev, [type]: key }));
     setDropdownOpen((prev) => ({ ...prev, [type]: false }));
   };
 
@@ -155,7 +161,7 @@ export function EditTaskModal({ open, setOpen, taskData }) {
                 onClick={() => toggleDropdown("priority")}
               >
                 <span className="text-black capitalize">
-                  {formData.priority || "Select Priority"}
+                  {options.priority.find(option => option.key === formData.priority)?.label || "Select Priority"}
                 </span>
                 <AiOutlineDown className="h-5 w-5 text-gray-400" />
               </div>
@@ -163,11 +169,11 @@ export function EditTaskModal({ open, setOpen, taskData }) {
                 <Card className="absolute mt-2 w-full border text-black rounded-lg shadow-lg z-10 max-h-48 overflow-y-auto">
                   {options.priority.map((option) => (
                     <div
-                      key={option}
+                      key={option.key}
                       className="px-3 py-2 cursor-pointer hover:bg-gray-100"
-                      onClick={() => handleOptionSelect("priority", option)}
+                      onClick={() => handleOptionSelect("priority", option.key)}
                     >
-                      <span className="text-gray-700">{option}</span>
+                      <span className="text-gray-700">{option.label}</span>
                     </div>
                   ))}
                 </Card>
@@ -182,19 +188,19 @@ export function EditTaskModal({ open, setOpen, taskData }) {
                 onClick={() => toggleDropdown("status")}
               >
                 <span className="text-black capitalize">
-                  {formData.status || "Select Status"}
+                  {options.status.find(option => option.key === formData.status)?.label || "Select Status"}
                 </span>
                 <AiOutlineDown className="h-5 w-5 text-gray-400" />
               </div>
               {dropdownOpen.status && (
                 <Card className="absolute mt-2 w-full border border-gray-300 rounded-lg shadow-lg z-10 max-h-48 overflow-y-auto">
-                  {options.status.map((option) => (
+                  {options.status.map(option => (
                     <div
-                      key={option}
+                      key={option.key}
                       className="px-3 py-2 cursor-pointer hover:bg-gray-100"
-                      onClick={() => handleOptionSelect("status", option)}
+                      onClick={() => handleOptionSelect("status", option.key)}
                     >
-                      <span className="text-black">{option}</span>
+                      <span className="text-black">{option.label}</span>
                     </div>
                   ))}
                 </Card>

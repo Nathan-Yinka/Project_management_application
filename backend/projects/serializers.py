@@ -2,15 +2,16 @@ from rest_framework import serializers
 from core.utils import get_user_permissions_for_instance 
 from organizations.models import Membership
 from .models import Project,Comment
+from users.serializers import UserDetailSerializer
 
 
 class ProjectSerializer(serializers.ModelSerializer):
     user_permissions = serializers.SerializerMethodField(read_only=True)
-
+    user = UserDetailSerializer(read_only=True, source='assigned_to')
     class Meta:
         model = Project
         fields = '__all__'
-        extra_fields = ['user_permissions']
+        extra_fields = ['user_permissions','user']
         read_only_fields = ['created_by']
 
     def get_user_permissions(self, obj):

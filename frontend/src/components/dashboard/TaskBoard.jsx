@@ -1,36 +1,45 @@
 import React, { useState, useEffect } from "react";
 import ProjectList from "./ProjectList";
 import ProjectListLoad from "../loaders/ProjectListLoad";
-import taskData from "../../data/task";
 import done_icon from "../../assets/done.svg";
 import abandoned_icon from "../../assets/abandoned.svg";
 import cancel_icon from "../../assets/cancelled.svg";
 import in_progress_icon from "../../assets/in_progress.svg";
 import plus_icon from "../../assets/plus.svg";
+import { useTaskContext } from "@/context/TaskContext";
+import { useOrganizationContext } from "@/context/OrganizationContext";
 
 const TaskBoard = ({ onTaskClick }) => {
-  const [isLoading, setIsLoading] = useState(true); // Loading state
-  const statuses = ["Abandoned", "In Progress", "Canceled", "Done"];
+  const { allTasks, isLoadingAll } = useTaskContext();
+  const { initLoading } = useOrganizationContext();
+  const [isLoadingMain, setIsLoadingMain] = useState(initLoading || isLoadingAll);
 
-  // Icon mapping based on status
+  useEffect(() => {
+    setIsLoadingMain(initLoading || isLoadingAll);
+  }, [initLoading, isLoadingAll]);
+
+  const statuses = ["abandoned", "in_progress", "canceled", "done"];
+
+  // Icon mapping based on status key
   const statusIcons = {
-    Abandoned: abandoned_icon,
-    "In Progress": in_progress_icon,
-    Canceled: cancel_icon,
-    Done: done_icon,
+    abandoned: abandoned_icon,
+    in_progress: in_progress_icon,
+    canceled: cancel_icon,
+    done: done_icon,
   };
 
-  // Simulate data loading with a timeout
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false); // Set loading to false after data is "loaded"
-    }, 2000); // Adjust the timeout as needed
+  // Label mapping based on status key
+  const statusLabels = {
+    abandoned: "Abandoned",
+    in_progress: "In Progress",
+    canceled: "Canceled",
+    done: "Done",
+  };
 
-    return () => clearTimeout(timer);
-  }, []);
+  console.log(allTasks)
 
-  // Group tasks by status
-  const groupedTasks = taskData.reduce((acc, task) => {
+  // Group tasks by status key
+  const groupedTasks = allTasks.reduce((acc, task) => {
     if (!acc[task.status]) {
       acc[task.status] = [];
     }
@@ -43,24 +52,24 @@ const TaskBoard = ({ onTaskClick }) => {
       {statuses.map((status) => (
         <div
           key={status}
-          className="flex-shrink-0 rounded-lg flex flex-col bg-white"
+          className="flex-shrink-0 rounded-lg flex flex-col bg-white min-w-[19rem]"
           style={getGradientBackground(status)}
         >
           <div
             className="flex items-center justify-center mb-3 p-2 rounded-md text-center m-3 py-3"
             style={getHeaderBackground(status)}
           >
-            <img src={statusIcons[status]} alt={`${status} icon`} className="mr-2" />
-            <span className="md:text-lg font-bold">{status}</span>
+            <img src={statusIcons[status]} alt={`${statusLabels[status]} icon`} className="mr-2" />
+            <span className="md:text-lg font-bold">{statusLabels[status]}</span>
           </div>
           <button className="text-sm text-black items-center mb-4 rounded-md p-2 m-3 bg-white justify-center hidden md:flex">
             <img src={plus_icon} className="mr-2" alt="" /> Add Task
           </button>
           <div className="flex-1 overflow-y-auto p-2">
-            {isLoading ? (
+            {isLoadingMain ? (
               <ProjectListLoad /> // Render loader while loading
             ) : (
-              <ProjectList tasks={groupedTasks[status] || [] } onTaskClick={onTaskClick} /> // Render actual list after loading
+              <ProjectList tasks={groupedTasks[status] || []} onTaskClick={onTaskClick} /> // Render actual list after loading
             )}
           </div>
         </div>
@@ -71,19 +80,19 @@ const TaskBoard = ({ onTaskClick }) => {
 
 const getGradientBackground = (status) => {
   switch (status) {
-    case "Abandoned":
+    case "abandoned":
       return {
         background: "linear-gradient(180deg, rgba(74, 74, 74, 0.04) 0%, rgba(74, 74, 74, 0) 36.76%)",
       };
-    case "In Progress":
+    case "in_progress":
       return {
         background: "linear-gradient(180deg, rgba(246, 20, 91, 0.04) 0%, rgba(246, 20, 91, 0) 36.92%)",
       };
-    case "Canceled":
+    case "canceled":
       return {
         background: "linear-gradient(180deg, rgba(246, 114, 20, 0.04) 0%, rgba(246, 114, 20, 0) 36.6%)",
       };
-    case "Done":
+    case "done":
       return {
         background: "linear-gradient(180deg, rgba(0, 218, 65, 0.04) 0%, rgba(0, 218, 65, 0) 36.92%)",
       };
@@ -96,13 +105,13 @@ const getGradientBackground = (status) => {
 
 const getHeaderBackground = (status) => {
   switch (status) {
-    case "Abandoned":
+    case "abandoned":
       return { backgroundColor: "rgba(74, 74, 74, 0.1)" };
-    case "In Progress":
+    case "in_progress":
       return { backgroundColor: "rgba(246, 20, 91, 0.1)" };
-    case "Canceled":
+    case "canceled":
       return { backgroundColor: "rgba(246, 114, 20, 0.1)" };
-    case "Done":
+    case "done":
       return { backgroundColor: "rgba(0, 218, 65, 0.1)" };
     default:
       return { backgroundColor: "rgba(74, 74, 74, 0.1)" };

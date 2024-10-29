@@ -1,5 +1,5 @@
 import { CiLogout } from "react-icons/ci"; 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TaskBoard from "@/components/dashboard/TaskBoard";
 import TabSelector from "@/components/dashboard/TabSelector";
 import AvatarStack from "@/components/dashboard/AvatarStack";
@@ -11,7 +11,10 @@ import TaskDetailsModal from "@/components/modals/TaskDetailsModal";
 import EditTaskModal from "@/components/modals/EditTaskModal";
 import ConfirmLeaveModal from "@/components/modals/ConfirmLeaveModal";
 import { Button, Dialog } from "@material-tailwind/react";
-// import { log } from "console";
+import { useTaskContext } from "@/context/TaskContext";
+import { useOrganizationContext } from "@/context/OrganizationContext";
+import { useUserContext } from "@/context/UserContext";
+
 
 const Dashboard = () => {
   const [view, setView] = useState("Board");
@@ -21,11 +24,28 @@ const Dashboard = () => {
   const [openEdit, setOpenEdit] = useState(false);
   const [isLeaveModalOpen, setLeaveModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState({}); // State for selected task details
+  const { allTasks,isLoadingAll,fetchAllTasks } = useTaskContext()
+  const { organizationDetails } = useOrganizationContext()
+  const { fetchUsersInOrganization,fetchUsersNotInOrganization } = useUserContext()
 
   const toggleAddMemberModal = () => setIsAddMemberOpen(!isAddMemberOpen);
   const toggleAddTaskModal = () => setIsAddTaskOpen(!isAddTaskOpen);
   const toggleTaskDetailsModal = () => setIsTaskDetailsOpen(!isTaskDetailsOpen);
   const handleEdit = ()=> setOpenEdit(!openEdit);
+
+  
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     if (organizationDetails?.id) {
+  //       await fetchAllTasks(organizationDetails.id);
+  //       await fetchUsersNotInOrganization(organizationDetails.id);
+  //       await fetchUsersInOrganization(organizationDetails.id);
+  //     }
+  //   };
+    
+  //   fetchData();
+  // }, [fetchAllTasks, organizationDetails, fetchUsersNotInOrganization, fetchUsersInOrganization]);
+
 
   // Function to open task details with the specific task data
   const openTaskDetails = (task) => {
@@ -49,7 +69,7 @@ const handleConfirmLeave = () => {
           className="flex-1 flex md:justify-start px-2 gap-2"
         >
           <Button
-            onClick={toggleAddMemberModal}
+            onClick={toggleAddTaskModal}
             color="black"
             size="md"
             variant="gradient"
@@ -117,12 +137,12 @@ const handleConfirmLeave = () => {
       <CreateTaskModal open={isAddTaskOpen} setOpen={setIsAddTaskOpen} />
       <TaskDetailsModal open={isTaskDetailsOpen} setOpen={setIsTaskDetailsOpen} task={selectedTask} handleEdit={handleEdit} />
       <EditTaskModal open={openEdit} setOpen={setOpenEdit} taskData={selectedTask} />
-      <ConfirmLeaveModal open={isLeaveModalOpen} setOpen={setLeaveModalOpen} onConfirm={handleConfirmLeave} />;
+      <ConfirmLeaveModal open={isLeaveModalOpen} setOpen={setLeaveModalOpen} onConfirm={handleConfirmLeave} />
       {/* Render TaskBoard or TaskListView based on activeTab */}
       {view === "Board" ? (
-        <TaskBoard onTaskClick={openTaskDetails} />
+        <TaskBoard onTaskClick={openTaskDetails}/>
       ) : (
-        <TaskListView onTaskClick={openTaskDetails} />
+        <TaskListView onTaskClick={openTaskDetails}/>
       )}
     </>
   );

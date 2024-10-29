@@ -51,6 +51,12 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return user
     
 class UserDetailSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'first_name', 'last_name')
+        fields = ('id', 'username', 'email', 'first_name', 'last_name','name')
+
+    def get_name(self, obj):
+        # Combine first_name and last_name to form the full name
+        return f"{obj.first_name} {obj.last_name}".strip()
