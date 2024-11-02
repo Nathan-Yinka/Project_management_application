@@ -7,7 +7,6 @@ import { IoIosNotificationsOff } from "react-icons/io";
 import { CiLogout } from "react-icons/ci";
 import { slideIn, zoomIn } from "@/motion";
 import DropdownMenu from "@/components/dashboard/DropdownMenu";
-import { notifications } from "@/constants/app.routes";
 import { useAuthContext } from "@/context/AuthContext";
 
 function SidebarContent({ handleOrganizationCreate }) {
@@ -17,17 +16,17 @@ function SidebarContent({ handleOrganizationCreate }) {
   // Sidebar links data
   const links = [
     {
-      to: notifications,
+      to: "",
       name: "Tasks Management",
       icon: <BsListTask className="text-2xl" />,
     },
     {
-      to: notifications,
+      to: "",
       name: "Activities",
       icon: <AiFillClockCircle className="text-2xl" />,
     },
     {
-      to: notifications,
+      to: "",
       name: "Notifications",
       icon: <IoIosNotificationsOff className="text-2xl" />,
     },

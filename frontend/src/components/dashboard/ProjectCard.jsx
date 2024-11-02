@@ -71,7 +71,7 @@ const ProjectCard = ({ project, onTaskClick }) => {
 
   return (
     <div className="mx-2 relative" onClick={() => onTaskClick(project)}>
-      <div className="bg-white rounded-lg p-4 max:w-[10rem] md:max-w-[18rem] border border-gray-200 relative [17rem]">
+      <div className="bg-white rounded-lg p-4 w-[15rem] h-[15rem] md:w-[18rem] md:h-[17rem] border border-gray-200 relative">
         <div className="flex items-center justify-between mb-7">
           <span
             className={`${getPriorityColor()} rounded-full px-3 py-1 text-xs`}

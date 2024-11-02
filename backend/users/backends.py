@@ -8,7 +8,7 @@ class EmailOrUsernameBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
         try:
             # Try to find the user by email or username
-            user = User.objects.get(Q(username=username) | Q(email=username))
+            user = User.objects.get(Q(username=username) | Q(email__iexact=username))
         except User.DoesNotExist:
             return None
 

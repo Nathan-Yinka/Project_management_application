@@ -52,7 +52,7 @@ export function TaskDetailsModal({ open, setOpen, task, handleEdit }) {
     <Dialog
       open={open}
       handler={handleOpen}
-      className="p-6 rounded-lg max-w-xl w-full"
+      className="p-6 rounded-lg max-w-xl w-full max-h-[calc(100vh-10px)] overflow-y-auto"
     >
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-black">Task Details</h2>
@@ -64,7 +64,7 @@ export function TaskDetailsModal({ open, setOpen, task, handleEdit }) {
         </button>
       </div>
 
-      <DialogBody>
+      <DialogBody className="pb-8 max-h-[65vh] overflow-y-auto md:max-h-none">
         {/* Creation Date */}
         <div className="flex items-center gap-2 text-gray-500 mb-4">
           <BsCalendar className="text-lg" />

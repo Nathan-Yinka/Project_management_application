@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { clearToken, handleLoginSuccess } from "@/helpers/auth";
 import { useOrganizationContext } from "@/context/OrganizationContext";
 import { useAuthContext } from "@/context/AuthContext";
+import { dashboard } from "@/constants/app.routes";
 
 export const useUser = () => {
   const navigate = useNavigate();
@@ -59,7 +60,7 @@ export const useUser = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [baseAxios]);
+  }, [baseAxios,token]);
 
   // Fetch all users
   const fetchAllUsers = useCallback(async () => {
@@ -196,7 +197,7 @@ export const useUser = () => {
 
   // User login
   const loginUser = useCallback(
-    async (loginData, redirectTo = `/dashboard`) => {
+    async (loginData, redirectTo = dashboard) => {
       if (isLoadingLogin) return;
       setIsLoadingLogin(true);
       try {
@@ -252,7 +253,7 @@ export const useUser = () => {
        await Promise.all([
            // Uncomment if you need these functions
            fetchUserDetails(),
-           // fetchAllUsers(),
+
            fetchUsersInOrganization(),
            fetchUsersNotInOrganization(),
        ]);
@@ -276,7 +277,7 @@ export const useUser = () => {
 
   useEffect(() => {
     init();
-  }, [init, organizationDetails.id]);
+  }, [init, organizationDetails.id,token]);
 
   return {
     fetchUserDetails,

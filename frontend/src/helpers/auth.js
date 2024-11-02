@@ -1,3 +1,4 @@
+import { login } from "@/constants/app.routes";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -32,5 +33,5 @@ export const getToken = () => {
 
 export const authRedirect = () => {
   clearToken();
-  window.location.href = "/login";  // Directly navigate to login page
+  window.location.href = login;  // Directly navigate to login page
 };

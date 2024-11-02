@@ -113,7 +113,7 @@ export function AddMemberModal({ open, setOpen }) {
 
   return (
     <>
-      <Dialog open={open} handler={handleOpen} className="p-4 rounded-xl">
+      <Dialog open={open} handler={handleOpen} className="p-4 rounded-xl max-h-[calc(100vh-10px)] overflow-y-auto">
         <div className="flex justify-between items-center p-2">
           <DialogHeader className="text-lg font-semibold">
             Add Member
@@ -124,7 +124,7 @@ export function AddMemberModal({ open, setOpen }) {
           />
         </div>
 
-        <DialogBody>
+        <DialogBody className="max-h-[60vh] overflow-y-auto md:max-h-none">
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Member

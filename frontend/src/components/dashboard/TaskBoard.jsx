@@ -54,7 +54,7 @@ const TaskBoard = ({ onTaskClick }) => {
       {statuses.map((status) => (
         <div
           key={status}
-          className="flex-shrink-0 rounded-lg flex flex-col bg-white min-w-[19rem]"
+          className="flex-shrink-0 rounded-lg flex flex-col bg-white min-w-[17rem] md:min-w-[20rem]"
           style={getGradientBackground(status)}
         >
           <div

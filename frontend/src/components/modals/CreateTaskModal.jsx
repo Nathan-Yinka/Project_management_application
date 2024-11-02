@@ -148,7 +148,7 @@ export function CreateTaskModal({ open, setOpen }) {
       <Dialog
         open={open}
         handler={handleOpen}
-        className="rounded-lg max-w-2xl sm:w-[90%] w-full"
+        className="rounded-lg max-w-2xl sm:w-[90%] w-full max-h-[calc(100vh-30px)] overflow-y-auto"
       >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-semibold px-5 pt-5 text-black ">
@@ -162,7 +162,7 @@ export function CreateTaskModal({ open, setOpen }) {
           </button>
         </div>
 
-        <DialogBody>
+        <DialogBody className="pb-8 max-h-[65vh] overflow-y-auto md:max-h-none">
           {/* Task Name Input */}
           <div className="mb-8">
             <label className="block text-sm font-medium text-black mb-2">
@@ -196,118 +196,111 @@ export function CreateTaskModal({ open, setOpen }) {
           {/* Dropdowns for Priority, Status, and Assignee */}
           <div className="flex flex-wrap gap-4 mb-4">
             {/* Priority Dropdown */}
-            <div
-              className="relative flex-grow sm:flex-grow-0 sm:w-[28%]"
-              ref={dropdownRefs.priority}
-            >
-              <label className="block text-sm font-medium text-black mb-1">
-                Priority
-              </label>
-              <div
-                className="flex items-center justify-between px-3 py-2 border border-gray-300 rounded-lg bg-gray-300 cursor-pointer"
-                onClick={() => toggleDropdown("priority")}
-              >
-                <span className="text-black capitalize">
-                  {options.priority.find(
-                    (option) => option.key === formData.priority,
-                  )?.label || "Select Priority"}
-                </span>
-                <AiOutlineDown className="h-5 w-5 text-gray-400" />
-              </div>
-              {dropdownOpen.priority && (
-                <Card className="absolute mt-2 w-full border text-black rounded-lg shadow-lg z-10 max-h-48 overflow-y-auto">
-                  {options.priority.map((option) => (
-                    <div
-                      key={option.key}
-                      className="px-3 py-2 cursor-pointer hover:bg-gray-100"
-                      onClick={() => handleOptionSelect("priority", option.key)}
-                    >
-                      <span className="text-gray-700">{option.label}</span>
-                    </div>
-                  ))}
-                </Card>
-              )}
-            </div>
+<div
+  className="relative flex-grow sm:flex-grow-0 sm:w-[28%]"
+  ref={dropdownRefs.priority}
+>
+  <label className="block text-sm font-medium text-black mb-1">
+    Priority
+  </label>
+  <div
+    className="flex items-center justify-between px-3 py-2 border border-gray-300 rounded-lg bg-gray-300 cursor-pointer"
+    onClick={() => toggleDropdown("priority")}
+  >
+    <span className="text-black capitalize">
+      {options.priority.find((option) => option.key === formData.priority)?.label || "Select Priority"}
+    </span>
+    <AiOutlineDown className="h-5 w-5 text-gray-400" />
+  </div>
+  {dropdownOpen.priority && (
+    <Card className="absolute mt-2 min-w-[12rem] w-full border text-black rounded-lg shadow-lg z-10 max-h-48 overflow-y-auto">
+      {options.priority.map((option) => (
+        <div
+          key={option.key}
+          className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+          onClick={() => handleOptionSelect("priority", option.key)}
+        >
+          <span className="text-gray-700">{option.label}</span>
+        </div>
+      ))}
+    </Card>
+  )}
+</div>
 
-            {/* Status Dropdown */}
-            <div
-              className="relative flex-grow sm:flex-grow-0 sm:w-[28%]"
-              ref={dropdownRefs.status}
-            >
-              <label className="block text-sm font-medium text-black mb-1">
-                Status
-              </label>
-              <div
-                className="flex items-center justify-between px-3 py-2 border border-gray-300 rounded-lg bg-gray-300 cursor-pointer"
-                onClick={() => toggleDropdown("status")}
-              >
-                <span className="text-black capitalize">
-                  {options.status.find(
-                    (option) => option.key === formData.status,
-                  )?.label || "Select Status"}
-                </span>
-                <AiOutlineDown className="h-5 w-5 text-gray-400" />
-              </div>
-              {dropdownOpen.status && (
-                <Card className="absolute mt-2 w-full border border-gray-300 rounded-lg shadow-lg z-10 max-h-48 overflow-y-auto">
-                  {options.status.map((option) => (
-                    <div
-                      key={option.key}
-                      className="px-3 py-2 cursor-pointer hover:bg-gray-100"
-                      onClick={() => handleOptionSelect("status", option.key)}
-                    >
-                      <span className="text-black">{option.label}</span>
-                    </div>
-                  ))}
-                </Card>
-              )}
-            </div>
+{/* Status Dropdown */}
+<div
+  className="relative flex-grow sm:flex-grow-0 sm:w-[28%]"
+  ref={dropdownRefs.status}
+>
+  <label className="block text-sm font-medium text-black mb-1">
+    Status
+  </label>
+  <div
+    className="flex items-center justify-between px-3 py-2 border border-gray-300 rounded-lg bg-gray-300 cursor-pointer"
+    onClick={() => toggleDropdown("status")}
+  >
+    <span className="text-black capitalize">
+      {options.status.find((option) => option.key === formData.status)?.label || "Select Status"}
+    </span>
+    <AiOutlineDown className="h-5 w-5 text-gray-400" />
+  </div>
+  {dropdownOpen.status && (
+    <Card className="absolute mt-2 min-w-[12rem] w-full border border-gray-300 rounded-lg shadow-lg z-10 max-h-48 overflow-y-auto">
+      {options.status.map((option) => (
+        <div
+          key={option.key}
+          className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+          onClick={() => handleOptionSelect("status", option.key)}
+        >
+          <span className="text-black">{option.label}</span>
+        </div>
+      ))}
+    </Card>
+  )}
+</div>
 
-            {/* Assignee Dropdown */}
-            <div
-              className="relative flex-grow sm:flex-grow-0 sm:w-[38%]"
-              ref={dropdownRefs.assignee}
-            >
-              <label className="block text-sm font-medium text-black mb-1">
-                Assignee
-              </label>
-              <div
-                className="flex items-center justify-between px-3 py-2 border border-gray-300 text-black rounded-lg cursor-pointer bg-gray-300"
-                onClick={() => toggleDropdown("assignee")}
-              >
-                <span className="text-black">
-                  {formData.assignee || "Select Assignee"}
-                </span>
-                <AiOutlineDown className="h-5 w-5 text-gray-400" />
-              </div>
-              {dropdownOpen.assignee && (
-                <Card className="absolute mt-2 w-full border border-gray-300 rounded-lg shadow-lg z-10 max-h-48 overflow-y-auto">
-                  {assignees.map((assignee) => (
-                    <div
-                      key={assignee.email}
-                      className={`flex items-center px-3 py-2 text-black cursor-pointer hover:bg-gray-100 ${
-                        formData.assignee === assignee.name ? "bg-gray-200" : ""
-                      }`}
-                      onClick={() =>
-                        handleOptionSelect("assignee", assignee.name)
-                      }
-                    >
-                      <div
-                        className="flex items-center justify-center w-8 h-8 rounded-full mr-3"
-                        style={{ backgroundColor: getRandomColor() }}
-                      >
-                        {getInitials(assignee.name)}
-                      </div>
-                      <div>
-                        <p className="font-medium text-black">
-                          {assignee.name}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </Card>
-              )}
-            </div>
+{/* Assignee Dropdown */}
+<div
+  className="relative flex-grow sm:flex-grow-0 sm:w-[38%]"
+  ref={dropdownRefs.assignee}
+>
+  <label className="block text-sm font-medium text-black mb-1">
+    Assignee
+  </label>
+  <div
+    className="flex items-center justify-between px-3 py-2 border border-gray-300 text-black rounded-lg cursor-pointer bg-gray-300"
+    onClick={() => toggleDropdown("assignee")}
+  >
+    <span className="text-black">
+      {formData.assignee || "Select Assignee"}
+    </span>
+    <AiOutlineDown className="h-5 w-5 text-gray-400" />
+  </div>
+  {dropdownOpen.assignee && (
+    <Card className="absolute mt-2 min-w-[12rem] w-full border border-gray-300 rounded-lg shadow-lg z-10 max-h-48 overflow-y-auto">
+      {assignees.map((assignee) => (
+        <div
+          key={assignee.email}
+          className={`flex items-center px-3 py-2 text-black cursor-pointer hover:bg-gray-100 ${
+            formData.assignee === assignee.name ? "bg-gray-200" : ""
+          }`}
+          onClick={() => handleOptionSelect("assignee", assignee.name)}
+        >
+          <div
+            className="flex items-center justify-center w-8 h-8 rounded-full mr-3"
+            style={{ backgroundColor: getRandomColor() }}
+          >
+            {getInitials(assignee.name)}
+          </div>
+          <div>
+            <p className="font-medium text-black">{assignee.name}</p>
+          </div>
+        </div>
+      ))}
+    </Card>
+  )}
+</div>
+
           </div>
         </DialogBody>
 

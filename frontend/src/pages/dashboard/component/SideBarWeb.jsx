@@ -12,16 +12,6 @@ import { PiContactlessPayment } from "react-icons/pi";
 import { IoHeartOutline, IoKeyOutline } from "react-icons/io5";
 import { CiSettings } from "react-icons/ci";
 import { NavLink, useLocation } from "react-router-dom";
-import {
-  dashboard,
-  notifications,
-  customers,
-  plans,
-  coupon,
-  paymenthistory,
-  profile,
-  rolespermissions,
-} from "../../../constants/app.routes";
 import { motion } from "framer-motion";
 import { slideIn, zoomIn } from "../../../motion";
 import { useState, useEffect } from "react";
@@ -48,7 +38,7 @@ function SideBarWeb({ handleOrganizationCreate }) {
   };
 
   useEffect(() => {
-    if (isActiveLink(profile) || isActiveLink(rolespermissions)) {
+    if (isActiveLink("") || isActiveLink(rolespermissions)) {
       setExpandIndex([0, 1]);
     }
   }, [location.pathname]);
