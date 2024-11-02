@@ -1,6 +1,6 @@
-import { IoIosNotificationsOff } from "react-icons/io"; 
-import { AiFillClockCircle } from "react-icons/ai"; 
-import { BsListTask } from "react-icons/bs"; 
+import { IoIosNotificationsOff } from "react-icons/io";
+import { AiFillClockCircle } from "react-icons/ai";
+import { BsListTask } from "react-icons/bs";
 import { CiLogout } from "react-icons/ci";
 // import logo from "../../../assets/darkoxypu.png";
 import { VscBellDot } from "react-icons/vsc";
@@ -57,7 +57,7 @@ function SideBarWeb({ handleOrganizationCreate }) {
     <div
       className={`w-[400px] bg-black px-[2%] hidden md:flex flex-col py-10 shadow-md h-svh overflow-y-scroll`}
     >
-       <SidebarContent handleOrganizationCreate={handleOrganizationCreate} />
+      <SidebarContent handleOrganizationCreate={handleOrganizationCreate} />
     </div>
   );
 }

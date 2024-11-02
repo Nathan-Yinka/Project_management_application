@@ -8,33 +8,30 @@ import { dashboard, homepage, login, signup } from "./constants/app.routes";
 import { Toaster } from "sonner";
 import { AppProvider } from "@/context/AppProvider";
 
-
 function App() {
   return (
-   
     <Router>
-       <AppProvider>
-      <Routes>
-        <Route path={homepage} element={<AuthLayout />}>  
-          <Route path={signup} element={<Signin />} />
-          <Route path={login} element={<Login />} />
-        </Route>
-        
-        <Route path={dashboard} element={<DashboardLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path={"card"} element={< Dashboard/>} />
+      <AppProvider>
+        <Routes>
+          <Route path={homepage} element={<AuthLayout />}>
+            <Route path={signup} element={<Signin />} />
+            <Route path={login} element={<Login />} />
           </Route>
-          
-      </Routes>
-      <Toaster
-      position={"top-right"}
-            richColors
-            duration={5000}
-            className="z-[9999999999999999999]"
-            closeButton/>
-        </AppProvider>
-    </Router>
 
+          <Route path={dashboard} element={<DashboardLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path={"card"} element={<Dashboard />} />
+          </Route>
+        </Routes>
+        <Toaster
+          position={"top-right"}
+          richColors
+          duration={5000}
+          className="z-[9999999999999999999]"
+          closeButton
+        />
+      </AppProvider>
+    </Router>
   );
 }
 

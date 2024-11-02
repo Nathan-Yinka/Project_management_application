@@ -8,9 +8,11 @@ import { CiLogout } from "react-icons/ci";
 import { slideIn, zoomIn } from "@/motion";
 import DropdownMenu from "@/components/dashboard/DropdownMenu";
 import { notifications } from "@/constants/app.routes";
+import { useAuthContext } from "@/context/AuthContext";
 
 function SidebarContent({ handleOrganizationCreate }) {
   const location = useLocation();
+  const { logout, isLoggedIn } = useAuthContext();
 
   // Sidebar links data
   const links = [
@@ -75,6 +77,7 @@ function SidebarContent({ handleOrganizationCreate }) {
 
       {/* Logout Button */}
       <motion.button
+        onClick={logout}
         initial={slideIn("up", null).initial}
         whileInView={slideIn("up", 2).animate}
         className="text-red-500 flex items-center gap-x-4 mt-5"

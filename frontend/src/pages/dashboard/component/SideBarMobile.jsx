@@ -48,7 +48,10 @@ function SideBarMobile({ showside, toggle, handleOrganizationCreate }) {
           whileInView={zoomIn(1, "min").animate}
           className="flex ml-5 w-full"
         >
-          <button onClick={toggle} className="w-full flex justify-end items-end">
+          <button
+            onClick={toggle}
+            className="w-full flex justify-end items-end"
+          >
             <RiCloseCircleFill className="text-3xl text-white justify-end items-end mr-10" />
           </button>
         </motion.div>

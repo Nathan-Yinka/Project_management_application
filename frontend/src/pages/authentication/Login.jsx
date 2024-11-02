@@ -2,12 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import loginImage from "../../assets/auth_image.jpeg";
 import { dashboard, signup } from "../../constants/app.routes";
-import { toast } from "sonner"
+import { toast } from "sonner";
 import { Spinner } from "@material-tailwind/react";
 import { useUserContext } from "@/context/UserContext";
+import { useAuthContext } from "@/context/AuthContext";
 
 const Login = () => {
   const { loginUser, isLoadingLogin } = useUserContext();
+  const { login } = useAuthContext();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,28 +17,27 @@ const Login = () => {
 
   const validateInputs = () => {
     const errors = [];
-  
+
     if (!email) {
       errors.push("Email or Username is required");
-    } 
-  
+    }
+
     if (!password) {
       errors.push("Password is required");
-    } 
-  
+    }
+
     // Show all errors using toast notifications
     errors.forEach((error) => toast.error(error));
-  
+
     // Return true if no errors, otherwise false
     return errors.length === 0;
   };
-  
+
   const handleLogin = async () => {
     if (validateInputs()) {
-      const success = await loginUser({ username:email, password });
+      const success = await loginUser({ username: email, password });
     }
   };
-  
 
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-auto">
@@ -134,7 +135,11 @@ const Login = () => {
                 className="bg-black text-white font-bold py-2 px-4 rounded-lg btn-primary w-full"
                 disabled={isLoadingLogin}
               >
-                {isLoadingLogin ? <Spinner color="white" className="font-bold" /> : "Login"}
+                {isLoadingLogin ? (
+                  <Spinner color="white" className="font-bold" />
+                ) : (
+                  "Login"
+                )}
               </button>
             </div>
             <p className="text-sm mb-4 md:mb-8 text-center font-thin">

@@ -1,0 +1,21 @@
+/* Dropdown container animation */
+.dropdown-content {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    max-height 0.6s ease-in-out,
+    opacity 0.6s ease-in-out;
+}
+
+/* Opened state */
+.dropdown-content.open {
+  max-height: 1000px; /* Higher value to avoid abrupt stops */
+  opacity: 1;
+}
+
+/* Closed state */
+.dropdown-content.closed {
+  max-height: 0;
+  opacity: 0;
+}

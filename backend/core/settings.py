@@ -219,7 +219,7 @@ if DEBUG:
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
-
+else:
     # Use PostgreSQL for production
     DATABASES = {
         'default': {
@@ -273,3 +273,35 @@ CORS_ALLOW_HEADERS = [
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',  # Set to 'DEBUG' to capture all log levels
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',  # Set to 'DEBUG' to see all logging messages
+            'propagate': True,
+        },
+
+    },
+}

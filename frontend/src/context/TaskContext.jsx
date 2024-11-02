@@ -4,13 +4,16 @@ import { useTask } from "@/hooks/useTask";
 const TaskContext = createContext();
 
 export const TaskProvider = ({ children }) => {
-    const taskContext = useTask();
+  const taskContext = useTask();
 
-    const value = useMemo(() => ({
-        ...taskContext,
-    }), [taskContext]);
+  const value = useMemo(
+    () => ({
+      ...taskContext,
+    }),
+    [taskContext],
+  );
 
-    return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>;
+  return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>;
 };
 
 export const useTaskContext = () => useContext(TaskContext);

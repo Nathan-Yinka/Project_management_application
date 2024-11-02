@@ -24,7 +24,7 @@ const NameAvatar = ({ name }) => {
   return (
     <div className="flex items-center space-x-3">
       <div
-        className={`h-8 w-8 rounded-full ${avatarColor} flex items-center justify-center text-white font-normal`}
+        className={`h-8 w-8 rounded-full ${avatarColor} flex items-center justify-center text-white font-normal uppercase`}
       >
         {initial}
       </div>

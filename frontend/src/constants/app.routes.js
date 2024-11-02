@@ -21,5 +21,5 @@ export const roledetails = "roledetails";
 export const rolespermissions = "rolespermissions";
 export const viewassignedrole = "viewassignedrole";
 
-export const login = "/login"
-export const signup = "/signup"
+export const login = "/login";
+export const signup = "/signup";

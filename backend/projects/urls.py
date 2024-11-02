@@ -11,7 +11,7 @@ urlpatterns = [
     path('', ProjectListCreateView.as_view(), name='project-list-create'),
 
     # URL for retrieving, updating, or deleting a specific project
-    path('<int:pk>/', ProjectDetailView.as_view(), name='project-detail'),
+    path('<int:pk>/<int:organization_id>/', ProjectDetailView.as_view(), name='project-detail'),
 
     # URL for updating the status of a project
     path('<int:project_id>/update-status/', UpdateProjectStatus.as_view(), name='update_project_status'),

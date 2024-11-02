@@ -1,4 +1,3 @@
-export const getUserFullName = (firstName,lastName)=>{
-    
-    return `${firstName || ""} ${lastName || ""}`
-}
+export const getUserFullName = (firstName, lastName) => {
+  return `${firstName || ""} ${lastName || ""}`;
+};

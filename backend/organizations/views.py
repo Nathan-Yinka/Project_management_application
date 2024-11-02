@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from core.permissions import IsOrganizationAdmin,IsOrganizationAdminOrSelf,CanAddProjectPermission,CanRemoveUserPermission,CanAddUserPermission,CanViewOrganizationPermission
 from .models import Organization, Membership
 from users.serializers import UserDetailSerializer
-from .serializers import OrganizationSerializer, MembershipSerializer,PendingMembershipSerializer,RemoveMembershipSerializer,LeaveOrganizationSerializer,OrganizationDetailSerializer,AddMembersSerializer
+from .serializers import  MembershipSerializer,PendingMembershipSerializer,RemoveMembershipSerializer,LeaveOrganizationSerializer,OrganizationDetailSerializer,AddMembersSerializer
 from guardian.utils import get_anonymous_user
 
 
@@ -19,12 +19,7 @@ class OrganizationListCreateView(generics.ListCreateAPIView):
     organization creator as an admin via signals.
     """
     permission_classes = [permissions.IsAuthenticated]
-    
-    def get_serializer_class(self):
-        # Use a different serializer for GET and POST
-        if self.request.method == 'POST':
-            return OrganizationSerializer
-        return OrganizationDetailSerializer
+    serializer_class = OrganizationDetailSerializer
 
     def get_queryset(self):
         # Return organizations where the current user is a member

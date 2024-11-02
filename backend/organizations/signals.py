@@ -46,10 +46,6 @@ def handle_membership_creation(sender, instance, created, **kwargs):
     member_group, _ = Group.objects.get_or_create(name=f"{instance.organization.name}_Member")
 
     if created:
-        print("in thhe post save member",instance.role)
-        print(settings.USER_ROLES['MEMBER'])
-        print(settings.USER_ROLES['MEMBER']==instance.role)
-        print(type(settings.USER_ROLES['MEMBER']), type(instance.role))
         # New membership created: Add the user to the appropriate group
         if instance.role == settings.USER_ROLES['ADMIN']:
             instance.user.groups.add(admin_group)
@@ -108,30 +104,65 @@ def handle_membership_deletion(sender, instance, **kwargs):
     instance.user.groups.remove(admin_group, member_group)
 
 
+from django.db import transaction
+from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib.auth.models import Group
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from .models import Membership, PendingMembership, User
+
+@receiver(post_save, sender=Membership)
+def handle_membership_creation(sender, instance, created, **kwargs):
+    admin_group, _ = Group.objects.get_or_create(name=f"{instance.organization.name}_Admin")
+    member_group, _ = Group.objects.get_or_create(name=f"{instance.organization.name}_Member")
+
+    if created:
+        # New membership created: Add the user to the appropriate group
+        if instance.role == settings.USER_ROLES['ADMIN']:
+            instance.user.groups.add(admin_group)
+            instance.user.groups.add(member_group)
+        elif instance.role == settings.USER_ROLES['MEMBER']:
+            instance.user.groups.add(member_group)
+
+        # Send an email notification if the user is added as a member
+        send_mail(
+            'You have been added to an organization',
+            f'Hello {instance.user.username},\n\nYou have been added as a {instance.role} to the organization: {instance.organization.name}.',
+            settings.DEFAULT_FROM_EMAIL,
+            [instance.user.email],
+            fail_silently=False,
+        )
+
 @receiver(post_save, sender=PendingMembership)
 def process_pending_membership(sender, instance, created, **kwargs):
     if created:
-        print("----------------------------------------------------------------")
-        # Check if the email is associated with an existing user
         try:
+            # Attempt to find the user by email
             user = User.objects.get(email__iexact=instance.email)
-            # Create a Membership for the user
-            Membership.objects.create(
-                user=user,
-                organization=instance.organization,
-                role=instance.role
-            )
-            # Optionally, you can delete the pending membership after successful conversion
-            instance.delete()
+
+            # Create a Membership for the user within a transaction
+            with transaction.atomic():
+                Membership.objects.create(
+                    user=user,
+                    organization=instance.organization,
+                    role=instance.role
+                )
+                # Only delete the pending membership after successful creation
+                instance.delete()
         except User.DoesNotExist:
-            # Send an email notification if the user is added as a member
+            # Send invitation email if the user doesn't exist
             send_mail(
                 'You have been invited to be added to an organization',
-                f'Hello dear,\n\nYou have been invited to be added as a {instance.role} to the organization: {instance.organization.name}. Register on the platform to join the organization',
+                f'Hello dear,\n\nYou have been invited to be added as a {instance.role} to the organization: {instance.organization.name}. Register on the platform to join the organization.',
                 settings.DEFAULT_FROM_EMAIL,
                 [instance.email],
                 fail_silently=False,
             )
+        except Exception as e:
+            # Optional: log any unexpected errors for debugging
+            print(f"Error processing pending membership: {e}")
+
             
 
 @receiver(post_save, sender=User)

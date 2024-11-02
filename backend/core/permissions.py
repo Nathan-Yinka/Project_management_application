@@ -97,15 +97,17 @@ class CanAddProjectPermission(BasePermission):
         # Check if the user has permission to add a project
         return self.check_permission(request, 'organizations.add_project')
 
-    def check_permission(self, request, permission_codename, view=None):
-        organization = self.get_organization(request.data.get('organization') or (view.kwargs.get('organization_id') if view is not None else "") ) 
+    def check_permission(self, request, permission_codename, view=None,obj=None):
         
+        organization = self.get_organization(request.data.get('organization') or (view.kwargs.get('organization_id') if view is not None else "") ) 
         if not self.is_user_member_of_organization(request.user, organization):
             logger.warning(f"User {request.user} is not a member of organization {organization.name}.")
             raise PermissionDenied("You must be a member of the organization.")
 
-        user_permissions = get_user_all_permissions(request.user, organization)
+        user_permissions = get_user_all_permissions(request.user, organization,obj)
+
         if permission_codename in user_permissions:
+            print("it in isdee hhere")
             logger.info(f"User {request.user} has '{permission_codename}' permission in organization {organization.name}.")
             return True
 
@@ -164,6 +166,23 @@ class CanRemoveUserPermission(CanAddProjectPermission):
 
         # Check if the user has permission to remove a user
         return self.check_permission(request, 'organizations.remove_user')
+    
+class CanUpdateProjectPermission(CanAddProjectPermission):
+    """
+    Custom permission to check if the user has the 'remove_user' permission for the organization.
+    The user must be a member of the organization and have the 'remove_user' permission.
+    """
+
+    def has_permission(self, request, view):
+        print("thisis  is mad and not great")
+        return True
+       
+    
+    def has_object_permission(self, request, view, obj):
+        # Use `check_permission` with the actual object in retrieve views
+        print("this is where we are")
+        return self.check_permission(request, 'projects.change_project', view=view, obj=[obj])
+
 
 
 class CanUpdateProjectStatusPermission(BasePermission):
@@ -187,7 +206,6 @@ class CanUpdateProjectStatusPermission(BasePermission):
             raise PermissionDenied("The specified project does not exist.")
         user_permissions = get_perms(request.user, project)
         has_permission = 'update_project_status' in user_permissions
-
         if not has_permission:
             logger.warning(f"User {request.user} does not have 'update_project_status' permission for project {project}.")
     

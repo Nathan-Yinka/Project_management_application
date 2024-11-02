@@ -18,11 +18,10 @@ import { useUserContext } from "@/context/UserContext";
 const DashboardLayout = () => {
   const [showside, setShowside] = useState(false);
   const [OpenOragization, setOpenOrganiztion] = useState(false);
-  const { fetchUserDetails, isLoading, userDetails } = useUserContext();
-  const { initLoading } = useOrganizationContext()
+  const { isLoading, userDetails } = useUserContext();
+  const { initLoading, hasPermission } = useOrganizationContext();
   const navigate = useNavigate();
-  const [isLoadingMain, setIsLoadingMain] = useState(initLoading||isLoading)
-
+  const [isLoadingMain, setIsLoadingMain] = useState(initLoading || isLoading);
 
   const toggle = () => {
     setShowside(!showside);
@@ -34,7 +33,11 @@ const DashboardLayout = () => {
     <div className="flex bg-[#FDFDFD] h-screen overflow-hidden">
       {/* SIDE BAR */}
       <SideBarWeb handleOrganizationCreate={handleOrganizationCreate} />
-      <SideBarMobile handleOrganizationCreate={handleOrganizationCreate} showside={showside} toggle={toggle} />
+      <SideBarMobile
+        handleOrganizationCreate={handleOrganizationCreate}
+        showside={showside}
+        toggle={toggle}
+      />
 
       {/* BODY LAYER */}
       <div className="flex flex-col w-full h-full relative">
@@ -55,11 +58,19 @@ const DashboardLayout = () => {
               transition={{ duration: 0.5 }}
               className="flex-1 flex justify-end md:justify-start"
             >
-              <CreateOrganizationModal open={OpenOragization} setOpen={setOpenOrganiztion} />
+              <CreateOrganizationModal
+                open={OpenOragization}
+                setOpen={setOpenOrganiztion}
+              />
               {isLoadingMain ? (
                 <div className="w-32 h-8 bg-gray-200 animate-pulse rounded-md"></div>
               ) : (
-                <NameAvatar name={getUserFullName(userDetails?.first_name, userDetails?.last_name)} />
+                <NameAvatar
+                  name={getUserFullName(
+                    userDetails?.first_name,
+                    userDetails?.last_name,
+                  )}
+                />
               )}
             </motion.div>
 

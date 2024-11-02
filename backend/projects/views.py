@@ -1,9 +1,10 @@
 # views.py
 from rest_framework import generics, permissions,serializers
+from django.db.models import Q
 from guardian.shortcuts import get_objects_for_user
 from .models import Project,Comment
 from .serializers import ProjectSerializer,ProjectStatusSerializer,CommentSerializer
-from core.permissions import CanAddProjectPermission,CanUpdateProjectStatusPermission,CanCommentOnProjectPermission
+from core.permissions import CanAddProjectPermission,CanUpdateProjectStatusPermission,CanCommentOnProjectPermission,CanUpdateProjectPermission
 from django.shortcuts import get_object_or_404
 
 class ProjectListCreateView(generics.ListCreateAPIView):
@@ -17,8 +18,24 @@ class ProjectListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         organization_id = self.request.query_params.get('organization_id')
-        return get_objects_for_user(user, 'view_project',klass=Project).filter(organization_id=organization_id)
+        search_query = self.request.query_params.get('search', '')
 
+        # Base queryset with permissions and organization filter
+        queryset = get_objects_for_user(user, 'view_project', klass=Project).filter(organization_id=organization_id)
+
+        # Apply search filter if a search query is provided
+        if search_query:
+            queryset = queryset.filter(
+                Q(name__icontains=search_query) |
+                Q(description__icontains=search_query) |
+                Q(assigned_to__username__icontains=search_query) | 
+                Q(assigned_to__email__icontains=search_query) |
+                Q(assigned_to__first_name__icontains=search_query) | 
+                Q(assigned_to__first_name__icontains=search_query) 
+            )
+
+        return queryset
+    
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
         
@@ -29,7 +46,7 @@ class ProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
-    permission_classes = [permissions.IsAuthenticated,permissions.DjangoObjectPermissions]
+    permission_classes = [permissions.IsAuthenticated,CanUpdateProjectPermission]
 
 class UpdateProjectStatus(generics.UpdateAPIView):
     """
@@ -47,7 +64,7 @@ class UpdateProjectStatus(generics.UpdateAPIView):
         organization_id = self.request.data.get("organization")
         if not organization_id:
             raise serializers.ValidationError({"organization": "This field is required."})
-        return get_object_or_404(Project, id=project_id, organization_id=organization_id)
+        return get_object_or_404(Project, id=project_id)
     
 
 class AddCommentView(generics.CreateAPIView):

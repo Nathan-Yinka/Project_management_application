@@ -4,13 +4,16 @@ import { useUser } from "@/hooks/useUser";
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-    const userContext = useUser();
+  const userContext = useUser();
 
-    const value = useMemo(() => ({
-        ...userContext,
-    }), [userContext]);
+  const value = useMemo(
+    () => ({
+      ...userContext,
+    }),
+    [userContext],
+  );
 
-    return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
 
 export const useUserContext = () => useContext(UserContext);

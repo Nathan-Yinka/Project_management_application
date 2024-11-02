@@ -39,7 +39,11 @@ const TaskListView = () => {
       {statuses.map((status) => (
         <div key={status} className="mb-8">
           <div className="flex items-center gap-2 mb-4">
-            <img src={statusIcons[status]} alt={`${status} icon`} className="w-5 h-5" />
+            <img
+              src={statusIcons[status]}
+              alt={`${status} icon`}
+              className="w-5 h-5"
+            />
             <h2 className="text-lg text-gray-800">{status}</h2>
           </div>
 
@@ -49,10 +53,18 @@ const TaskListView = () => {
               <thead>
                 <tr className="text-gray-500 font-normal border-b">
                   <th className="px-4 py-2 text-left min-w-[220px]">Name</th>
-                  <th className="px-4 py-2 text-center min-w-[180px]">Assignee</th>
-                  <th className="px-4 py-2 text-center min-w-[180px]">Due Date</th>
-                  <th className="px-4 py-2 text-center min-w-[140px]">Priority</th>
-                  <th className="px-4 py-2 text-center min-w-[240px]">Task Details</th>
+                  <th className="px-4 py-2 text-center min-w-[180px]">
+                    Assignee
+                  </th>
+                  <th className="px-4 py-2 text-center min-w-[180px]">
+                    Due Date
+                  </th>
+                  <th className="px-4 py-2 text-center min-w-[140px]">
+                    Priority
+                  </th>
+                  <th className="px-4 py-2 text-center min-w-[240px]">
+                    Task Details
+                  </th>
                 </tr>
               </thead>
               <tbody>

@@ -2,8 +2,7 @@
 import React from "react";
 import ProjectCard from "./ProjectCard";
 
-const ProjectList = ({ tasks ,onTaskClick}) => {
-    
+const ProjectList = ({ tasks, onTaskClick }) => {
   return (
     <div className="space-y-4">
       {tasks.map((task) => (

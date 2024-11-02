@@ -1,8 +1,11 @@
 import React from "react";
 import { BsClipboardData, BsListTask } from "react-icons/bs";
 import { motion } from "framer-motion";
+import { useTaskContext } from "@/context/TaskContext";
 
 function TabSelector({ activeTab, setActiveTab }) {
+  const { search,handleSearch } = useTaskContext();
+
   return (
     <div className="flex items-center space-x-8">
       {/* Board Tab */}
@@ -46,7 +49,7 @@ function TabSelector({ activeTab, setActiveTab }) {
         </div>
         {activeTab === "List" && (
           <motion.div
-            key="underline-list"  // Unique key per tab
+            key="underline-list" // Unique key per tab
             layoutId={`underline-${activeTab}`} // Unique layoutId
             className="w-full h-[2px] bg-gray-600 rounded mt-1"
             initial={{ opacity: 0, y: -2 }}
@@ -61,6 +64,8 @@ function TabSelector({ activeTab, setActiveTab }) {
       <div className="flex-grow relative">
         <input
           type="text"
+          onChange={(e)=>handleSearch(e.target.value)}
+          value={search}
           placeholder="Search..."
           className="w-full py-2 px-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
         />

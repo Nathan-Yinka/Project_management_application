@@ -28,9 +28,12 @@ const Signin = () => {
     if (!firstName) errors.push("First name is required.");
     if (!lastName) errors.push("Last name is required.");
     if (!password) errors.push("Password is required.");
-    else if (password.length < 8) errors.push("Password must be at least 8 characters long.");
+    else if (password.length < 8)
+      errors.push("Password must be at least 8 characters long.");
     if (!confirmPassword) errors.push("Confirm password is required.");
-    else if (password !== confirmPassword) {errors.push("Passwords do not match.");}
+    else if (password !== confirmPassword) {
+      errors.push("Passwords do not match.");
+    }
 
     errors.forEach((error) => toast.error(error));
 
@@ -39,8 +42,13 @@ const Signin = () => {
 
   const handleSignUp = async () => {
     if (validateInputs()) {
-      const success = await signUpUser({ email, username, first_name:firstName, last_name:lastName, password });
-
+      const success = await signUpUser({
+        email,
+        username,
+        first_name: firstName,
+        last_name: lastName,
+        password,
+      });
     }
   };
 
@@ -58,7 +66,10 @@ const Signin = () => {
           <form className="w-full">
             {/* Email */}
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-normal mb-2" htmlFor="email">
+              <label
+                className="block text-gray-700 text-sm font-normal mb-2"
+                htmlFor="email"
+              >
                 Email
               </label>
               <input
@@ -73,7 +84,10 @@ const Signin = () => {
 
             {/* Username */}
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-normal mb-2" htmlFor="username">
+              <label
+                className="block text-gray-700 text-sm font-normal mb-2"
+                htmlFor="username"
+              >
                 Username
               </label>
               <input
@@ -88,7 +102,10 @@ const Signin = () => {
 
             {/* First Name */}
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-normal mb-2" htmlFor="first_name">
+              <label
+                className="block text-gray-700 text-sm font-normal mb-2"
+                htmlFor="first_name"
+              >
                 First Name
               </label>
               <input
@@ -103,7 +120,10 @@ const Signin = () => {
 
             {/* Last Name */}
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-normal mb-2" htmlFor="last_name">
+              <label
+                className="block text-gray-700 text-sm font-normal mb-2"
+                htmlFor="last_name"
+              >
                 Last Name
               </label>
               <input
@@ -118,7 +138,10 @@ const Signin = () => {
 
             {/* Password */}
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-normal mb-2" htmlFor="password">
+              <label
+                className="block text-gray-700 text-sm font-normal mb-2"
+                htmlFor="password"
+              >
                 Password
               </label>
               <div className="relative">
@@ -134,53 +157,56 @@ const Signin = () => {
                   className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                   <svg
-            className="h-5 w-5 text-gray-500"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            {/* Eye and Eye-off SVG Paths */}
-            <path
-              className={showPassword ? "hidden" : "block"}
-              d="M9.88 9.88a3 3 0 1 0 4.24 4.24"
-            ></path>
-            <path
-              className={showPassword ? "hidden" : "block"}
-              d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"
-            ></path>
-            <path
-              className={showPassword ? "hidden" : "block"}
-              d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"
-            ></path>
-            <line
-              className={showPassword ? "hidden" : "block"}
-              x1="2"
-              x2="22"
-              y1="2"
-              y2="22"
-            ></line>
-            <path
-              className={showPassword ? "block" : "hidden"}
-              d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"
-            ></path>
-            <circle
-              className={showPassword ? "block" : "hidden"}
-              cx="12"
-              cy="12"
-              r="3"
-            ></circle>
-          </svg>
+                  <svg
+                    className="h-5 w-5 text-gray-500"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    {/* Eye and Eye-off SVG Paths */}
+                    <path
+                      className={showPassword ? "hidden" : "block"}
+                      d="M9.88 9.88a3 3 0 1 0 4.24 4.24"
+                    ></path>
+                    <path
+                      className={showPassword ? "hidden" : "block"}
+                      d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"
+                    ></path>
+                    <path
+                      className={showPassword ? "hidden" : "block"}
+                      d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"
+                    ></path>
+                    <line
+                      className={showPassword ? "hidden" : "block"}
+                      x1="2"
+                      x2="22"
+                      y1="2"
+                      y2="22"
+                    ></line>
+                    <path
+                      className={showPassword ? "block" : "hidden"}
+                      d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"
+                    ></path>
+                    <circle
+                      className={showPassword ? "block" : "hidden"}
+                      cx="12"
+                      cy="12"
+                      r="3"
+                    ></circle>
+                  </svg>
                 </span>
               </div>
             </div>
 
             {/* Confirm Password */}
             <div className="mt-4">
-              <label className="block text-gray-700 text-sm font-normal mb-2" htmlFor="confirmPassword">
+              <label
+                className="block text-gray-700 text-sm font-normal mb-2"
+                htmlFor="confirmPassword"
+              >
                 Confirm Password
               </label>
               <div className="relative">
@@ -196,46 +222,46 @@ const Signin = () => {
                   className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
-                   <svg
-              className="h-5 w-5 text-gray-500"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              {/* Eye and Eye-off SVG Paths for Confirm Password */}
-              <path
-                className={showConfirmPassword ? "hidden" : "block"}
-                d="M9.88 9.88a3 3 0 1 0 4.24 4.24"
-              ></path>
-              <path
-                className={showConfirmPassword ? "hidden" : "block"}
-                d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"
-              ></path>
-              <path
-                className={showConfirmPassword ? "hidden" : "block"}
-                d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"
-              ></path>
-              <line
-                className={showConfirmPassword ? "hidden" : "block"}
-                x1="2"
-                x2="22"
-                y1="2"
-                y2="22"
-              ></line>
-              <path
-                className={showConfirmPassword ? "block" : "hidden"}
-                d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"
-              ></path>
-              <circle
-                className={showConfirmPassword ? "block" : "hidden"}
-                cx="12"
-                cy="12"
-                r="3"
-              ></circle>
-            </svg>
+                  <svg
+                    className="h-5 w-5 text-gray-500"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    {/* Eye and Eye-off SVG Paths for Confirm Password */}
+                    <path
+                      className={showConfirmPassword ? "hidden" : "block"}
+                      d="M9.88 9.88a3 3 0 1 0 4.24 4.24"
+                    ></path>
+                    <path
+                      className={showConfirmPassword ? "hidden" : "block"}
+                      d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"
+                    ></path>
+                    <path
+                      className={showConfirmPassword ? "hidden" : "block"}
+                      d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"
+                    ></path>
+                    <line
+                      className={showConfirmPassword ? "hidden" : "block"}
+                      x1="2"
+                      x2="22"
+                      y1="2"
+                      y2="22"
+                    ></line>
+                    <path
+                      className={showConfirmPassword ? "block" : "hidden"}
+                      d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"
+                    ></path>
+                    <circle
+                      className={showConfirmPassword ? "block" : "hidden"}
+                      cx="12"
+                      cy="12"
+                      r="3"
+                    ></circle>
+                  </svg>
                 </span>
               </div>
             </div>
@@ -248,12 +274,19 @@ const Signin = () => {
                 className="bg-black text-white font-bold py-2 px-4 rounded-lg btn-primary w-full"
                 disabled={isLoadingSignUp}
               >
-                {isLoadingSignUp ? <Spinner color="white" className="font-bold" /> : "Sign Up"}
+                {isLoadingSignUp ? (
+                  <Spinner color="white" className="font-bold" />
+                ) : (
+                  "Sign Up"
+                )}
               </button>
             </div>
             <p className="md:text-sm mb-4 md:mb-8 text-center font-thin">
               Already have an Account?{" "}
-              <span onClick={() => navigate(login)} className="font-semibold cursor-pointer">
+              <span
+                onClick={() => navigate(login)}
+                className="font-semibold cursor-pointer"
+              >
                 Login
               </span>
             </p>

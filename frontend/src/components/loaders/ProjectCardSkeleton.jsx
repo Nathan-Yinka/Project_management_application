@@ -3,7 +3,7 @@ import React from "react";
 const ProjectCardSkeleton = () => {
   return (
     <div className="mx-2 relative">
-      <div className="bg-white rounded-lg p-4 w-[18rem]  border border-gray-200 relative md:h-[17rem] animate-pulse">
+      <div className="bg-white rounded-lg p-4 w-[17rem]  border border-gray-200 relative md:h-[17rem] animate-pulse">
         <div className="flex items-center justify-between mb-7">
           {/* Priority badge skeleton */}
           <span className="bg-gray-200 rounded-full h-4 w-20"></span>

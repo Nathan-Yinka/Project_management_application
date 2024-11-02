@@ -76,6 +76,7 @@ class AddMembersSerializer(serializers.Serializer):
         """
         emails = data.get('emails')
         organization = data.get('organization')
+        
 
         # Validate each email
         for email in emails:
@@ -96,16 +97,12 @@ class AddMembersSerializer(serializers.Serializer):
         """
         emails = validated_data.get('emails')
         organization = validated_data.get('organization')
-        pending_memberships = []
+        created_memberships = []
 
         for email in emails:
-            pending_memberships.append(PendingMembership(email=email, organization=organization))
-
-        # Bulk create pending memberships
-        created_memberships = PendingMembership.objects.bulk_create(pending_memberships)
-
-        for membership in created_memberships:
-            post_save.send(sender=PendingMembership, instance=membership, created=True)
+            # Save each membership individually to ensure primary key assignment and signal triggering
+            membership = PendingMembership.objects.create(email=email, organization=organization, role="member")
+            created_memberships.append(membership)
 
         return created_memberships
 
@@ -126,12 +123,14 @@ class LeaveOrganizationSerializer(serializers.Serializer):
         return value
 
 class OrganizationDetailSerializer(serializers.ModelSerializer):
-    users = serializers.SerializerMethodField()
-    user_permissions = serializers.SerializerMethodField()
+    users = serializers.SerializerMethodField(read_only=True)
+    user_permissions = serializers.SerializerMethodField(read_only=True)
+    user_memberships = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Organization
-        fields = ('id', 'name', 'description', 'created_at', 'created_by', 'users', 'user_permissions')
+        fields = ('id', 'name', 'description', 'created_at', 'created_by', 'users', 'user_permissions','user_memberships')
+        read_only_fields = ('created_by', 'created_at')
 
     def get_users(self, obj):
         """
@@ -148,3 +147,10 @@ class OrganizationDetailSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             return get_user_all_permissions(request.user, organization=obj)
         return []
+    
+    def get_user_memberships(self, obj):
+        """
+        Get the list of memberships for this organization.
+        """
+        memberships = obj.user_memberships.all()  # Access the related memberships
+        return MembershipSerializer(memberships, many=True).data
