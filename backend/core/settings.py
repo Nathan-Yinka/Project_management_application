@@ -247,13 +247,16 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 
-CORS_ALLOWS_ORIGINS = [
-    "http://localhost:5500",
-    "https://video-recording-api.onrender.com/videos/",
-    "https://helpmeoo.netlify.app/",
-    "https://malzahra.tech",
-    "http://localhost:5173"
+
+CORS_ALLOW_HEADERS = [
+    "Accept",
+    "Content-Type",
+    "Authorization",
 ]
+
+
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_METHODS = [
     "GET",
@@ -263,18 +266,6 @@ CORS_ALLOW_METHODS = [
     "DELETE",
     "OPTIONS",
 ]
-
-CORS_ALLOW_HEADERS = [
-    "Accept",
-    "Content-Type",
-    "Authorization",
-]
-
-CORS_ALLOW_CREDENTIALS = True
-
-CORS_ALLOW_ALL_ORIGINS = True
-
-
 
 LOGGING = {
     'version': 1,
