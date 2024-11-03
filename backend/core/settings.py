@@ -219,7 +219,7 @@ if DEBUG:
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
-
+else:
     # Use PostgreSQL for production
     DATABASES = {
         'default': {
