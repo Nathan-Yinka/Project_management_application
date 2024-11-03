@@ -90,7 +90,7 @@ const TaskListView = ({ onTaskClick }) => {
   }, {});
 
   return (
-    <div className="w-full bg-white shadow-md rounded-lg p-4">
+    <div className="w-full bg-white shadow-md rounded-lg p-4 max-w-full mx-auto">
       {statuses.map((status) => (
         <div
           key={status}

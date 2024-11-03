@@ -130,11 +130,11 @@ const ListCard = ({ task, onTaskClick }) => {
           Priority
         </span>
       </td>
-      <td className="px-4 py-2 text-gray-600 min-w-[240px] whitespace-nowrap truncate overflow-hidden text-ellipsis">
-        <span className="truncate block text-gray-500 text-sm">
-          {task.description}
-        </span>
-      </td>
+      <td className="px-4 py-2 text-gray-600 min-w-[180px] max-w-[180px] whitespace-nowrap truncate overflow-hidden text-ellipsis">
+  <span className="truncate block text-gray-500 text-sm">
+    {task.description}
+  </span>
+</td>
     </tr>
   );
 };
