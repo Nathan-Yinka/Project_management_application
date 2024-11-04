@@ -2,7 +2,7 @@ import { getToken, authRedirect } from "@/helpers/auth";
 import axios from "axios";
 
 export const createAxiosInstance = () => {
-  const baseServerUrl = import.meta.env.VITE_PUBLIC_BASEURL;
+  const baseServerUrl = import.meta.env.VITE_PUBLIC_BASEURL || "http://127.0.0.1:8000/";
   const axiosInstance = axios.create({
     baseURL: baseServerUrl,
     timeout: 100000,

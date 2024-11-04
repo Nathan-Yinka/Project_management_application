@@ -69,10 +69,13 @@ Welcome to the **Project Management Application Backend**! 🚀 This backend ser
 
 ## 🚀 Installation
 
+## Running the backend server
+
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-username/project-management-backend.git
-   cd project-management-backend
+   https://github.com/Nathan-Yinka/project_management_application.git
+   cd project_management_application
+   cd backend
    ```
 
 2. Create a virtual environment and activate it:
@@ -94,13 +97,10 @@ Welcome to the **Project Management Application Backend**! 🚀 This backend ser
 🐳 Running with Docker
 - Build the Docker image:
     ```bash
-    docker build -t project-management-backend .
+    docker build -t django-backend .
+    docker run -p 8000:8000 django-backend
     ```
 
-- Run the Docker container:
-    ```bash
-    docker-compose up
-    ```
 
 ## 🚀 Running the Server
 After completing the installation steps, the development server should be running at http://127.0.0.1:8000/. You can access the API endpoints and perform various operations on projects and organizations.
@@ -108,5 +108,54 @@ After completing the installation steps, the development server should be runnin
 ## 📜 Swagger Documentation
 The project includes an interactive Swagger documentation that provides a comprehensive overview of all available API endpoints. You can access it by navigating to:
 
-http://127.0.0.1:8000/swagger/
+http://127.0.0.1:8000
 The Swagger documentation allows you to explore and test the API directly from your browser. It is a helpful tool for understanding how the endpoints work and for trying out different requests.
+
+
+
+## 🚀 Running the Frontend
+
+1. **Navigate to the frontend directory**:
+    ```bash
+    cd ../frontend
+    ```
+
+2. **Create a `.env` file**:
+   In the `frontend` directory, create a `.env` file to store environment variables, including the backend server URL.
+
+    ```bash
+    touch .env
+    ```
+
+3. **Add the backend server URL**:
+   Open the `.env` file and add the backend server URL using the `VITE_PUBLIC_BASEURL` variable name:
+
+    ```env
+    VITE_PUBLIC_BASEURL="http://127.0.0.1:8000/"
+    ```
+
+    Replace `http://127.0.0.1:8000/` with your actual backend server URL if it differs, such as a staging or production URL.
+
+4. **Install frontend dependencies**:
+    ```bash
+    npm install
+    ```
+
+5. **Start the frontend server**:
+    ```bash
+    npm run dev
+    ```
+
+6. **Access the frontend application**:
+   After the server starts, you can access the frontend application at [http://localhost:5173/](http://localhost:5173/) (or whichever port is specified).
+
+### Notes
+- Ensure that `VITE_PUBLIC_BASEURL` is correctly set up in your `.env` file, as this variable will allow your frontend application to communicate with the backend server.
+- Restart the development server after making any changes to the `.env` file for the changes to take effect.
+
+This setup provides a clean way to manage the backend URL for different environments without changing the code.
+
+
+Access the frontend application: After the server starts, you can access the frontend application at http://localhost:5173/ (or whichever port is specified).
+
+

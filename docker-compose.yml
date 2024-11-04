@@ -1,15 +1,30 @@
 version: '3.9'
 
 services:
-  web:
+  backend:
     build: ./backend
-    container_name: django_app
-    command: python manage.py runserver 0.0.0.0:8000
+    container_name: project_backend
+    command: ["gunicorn", "--bind", "0.0.0.0:8000", "core.wsgi:application", "--workers", "4"]
     ports:
       - "8000:8000"
     volumes:
-      - .:/app
+      - ./backend:/app
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
       - DEBUG=true
+
+  frontend:
+    build: ./frontend 
+    container_name: project_react
+    command: npm run dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - ./frontend/node_modules:/usr/src/app/node_modules
+    environment:
+      - VITE_PUBLIC_BASEURL=0.0.0.0:8000
+
+volumes:
+  node_modules:

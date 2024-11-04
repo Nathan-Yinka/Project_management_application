@@ -1,5 +1,3 @@
-# Dockerfile for Django Backend
-
 # Use an official Python runtime as a parent image
 FROM python:3.9-slim
 
@@ -17,8 +15,15 @@ RUN pip install -r requirements.txt
 # Copy the rest of the application code to the working directory
 COPY . /app/
 
+# Copy the entrypoint script and give execution permission
+COPY docker-entrypoint.sh /app/
+RUN chmod +x /app/docker-entrypoint.sh
+
 # Expose the port the app runs on
 EXPOSE 8000
 
-# Run Django server
+# Use the entrypoint script to run the application
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
+
+# Default command to run the application
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "core.wsgi:application", "--workers", "4"]
